@@ -1,802 +1,780 @@
 <!DOCTYPE html>
-	<html lang="de">
-	<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Trigonometrie Lernbuch - 9. Klasse</title>
-	<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-	<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-	<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-	<script src="https://cdn.tailwindcss.com"></script>
-	</head>
-	<body>
-	<div id="root"></div>
-	<script type="text/babel">
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trigonometrie Lernbuch - 9. Klasse</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
 const { useState, useRef } = React;
 
 const TrigonometryLearningApp = () => {
-	const [currentLesson, setCurrentLesson] = useState(0);
-	const [mode, setMode] = useState('theory');
-	const [showHint, setShowHint] = useState({});
-	const [answers, setAnswers] = useState({});
-	const [submitted, setSubmitted] = useState({});
-	const [showCalculator, setShowCalculator] = useState(false);
-	const [calcDisplay, setCalcDisplay] = useState('0');
-	const [calcMemory, setCalcMemory] = useState(null);
-	const [calcOperation, setCalcOperation] = useState(null);
+const [currentLesson, setCurrentLesson] = useState(0);
+const [mode, setMode] = useState('theory');
+const [showHint, setShowHint] = useState({});
+const [answers, setAnswers] = useState({});
+const [submitted, setSubmitted] = useState({});
+const [showCalculator, setShowCalculator] = useState(false);
+const [calcDisplay, setCalcDisplay] = useState('0');
+const [calcMemory, setCalcMemory] = useState(null);
+const [calcOperation, setCalcOperation] = useState(null);
+const canvasRefs = useRef({});
+const [isDrawing, setIsDrawing] = useState({});
+const [canvasColor, setCanvasColor] = useState('#000000');
 
-	// Canvas refs for drawing exercises
-		const canvasRefs = useRef({});
-		const [isDrawing, setIsDrawing] = useState({});
-		const [canvasColor, setCanvasColor] = useState('#000000');
+const lessons = [
+{
+title: "Satz des Pythagoras",
+theory: {
+heading: "Was ist der Satz des Pythagoras?",
+content: "In einem rechtwinkligen Dreieck gilt: Die Summe der Quadrate der Katheten ist gleich dem Quadrat der Hypotenuse.",
+formula: "a² + b² = c²",
+image: `<svg viewBox="0 0 300 250" className="w-full max-w-md mx-auto">
+<polygon points="50,200 50,50 250,200" fill="#e3f2fd" stroke="#1976d2" strokeWidth="2"/>
+<text x="35" y="130" fontSize="16" fill="#d32f2f">a</text>
+<text x="150" y="235" fontSize="16" fill="#d32f2f">b</text>
+<text x="155" y="120" fontSize="16" fill="#1976d2">c</text>
+<rect x="45" y="195" width="10" height="10" fill="none" stroke="#000" strokeWidth="1"/>
+<text x="100" y="180" fontSize="14" fill="#000">a² + b² = c²</text>
+</svg>`,
+explanation: "Die Hypotenuse (c) ist die längste Seite und liegt gegenüber dem rechten Winkel. Die beiden Katheten (a und b) bilden den rechten Winkel.",
+examples: [
+{
+question: "Berechne die Hypotenuse c, wenn a = 3 cm und b = 4 cm",
+solution: "a² + b² = c²\n3² + 4² = c²\n9 + 16 = c²\n25 = c²\nc = √25 = 5 cm"
+},
+{
+question: "Berechne die Kathete a, wenn c = 13 cm und b = 5 cm",
+solution: "a² + b² = c²\na² + 5² = 13²\na² + 25 = 169\na² = 144\na = √144 = 12 cm"
+}
+],
+tips: [
+"Die Hypotenuse ist IMMER die längste Seite",
+"Du kannst die Formel umstellen: a² = c² - b² oder b² = c² - a²",
+"Vergiss nicht die Wurzel zu ziehen am Ende!"
+]
+},
+exercises: [
+{
+question: "Ein rechtwinkliges Dreieck hat die Katheten a = 6 cm und b = 8 cm. Wie lang ist die Hypotenuse c?",
+answer: "10",
+unit: "cm",
+hint: "Nutze die Formel a² + b² = c² und setze die Werte ein: 6² + 8² = c²",
+type: "input"
+},
+{
+question: "Die Hypotenuse c = 15 cm und eine Kathete a = 9 cm. Berechne die andere Kathete b.",
+answer: "12",
+unit: "cm",
+hint: "Forme die Formel um: b² = c² - a², dann b² = 15² - 9²",
+type: "input"
+},
+{
+question: "Zeichne ein rechtwinkliges Dreieck mit den Katheten a = 3 cm und b = 4 cm. Beschrifte alle Seiten.",
+answer: "drawing",
+hint: "Zeichne erst den rechten Winkel, dann die beiden Katheten und verbinde die Enden für die Hypotenuse.",
+type: "drawing"
+},
+{
+question: "Eine Leiter (5m lang) lehnt an einer Wand. Der Fußpunkt der Leiter ist 3m von der Wand entfernt. Wie hoch reicht die Leiter an der Wand?",
+answer: "4",
+unit: "m",
+hint: "Die Leiter ist die Hypotenuse (c=5m), der Abstand zur Wand ist eine Kathete (b=3m). Gesucht ist die Höhe (a).",
+type: "input"
+},
+{
+question: "Ein Fußballplatz ist 90m lang und 60m breit. Wie lang ist die Diagonale des Platzes? (Runde auf 2 Nachkommastellen)",
+answer: "108.17",
+unit: "m",
+hint: "Die Länge und Breite sind die beiden Katheten. Gesucht ist die Diagonale (Hypotenuse).",
+type: "input"
+}
+]
+},
+{
+title: "Sinus (sin)",
+theory: {
+heading: "Was ist der Sinus?",
+content: "Der Sinus eines Winkels im rechtwinkligen Dreieck ist das Verhältnis von Gegenkathete zu Hypotenuse.",
+formula: "sin(α) = Gegenkathete / Hypotenuse",
+image: `<svg viewBox="0 0 300 250" className="w-full max-w-md mx-auto">
+<polygon points="50,200 50,50 250,200" fill="#fff3e0" stroke="#f57c00" strokeWidth="2"/>
+<path d="M 70,200 A 20,20 0 0,1 50,180" fill="none" stroke="#d32f2f" strokeWidth="2"/>
+<text x="75" y="195" fontSize="14" fill="#d32f2f">α</text>
+<text x="140" y="130" fontSize="14" fill="#1976d2" fontWeight="bold">Gegenkathete</text>
+<text x="155" y="120" fontSize="14" fill="#2e7d32" fontWeight="bold">Hypotenuse</text>
+<line x1="250" y1="200" x2="250" y2="50" stroke="#1976d2" strokeWidth="3"/>
+<line x1="50" y1="50" x2="250" y2="200" stroke="#2e7d32" strokeWidth="3"/>
+<rect x="245" y="195" width="10" height="10" fill="none" stroke="#000" strokeWidth="1"/>
+</svg>`,
+explanation: "Die Gegenkathete liegt dem Winkel α gegenüber. Die Hypotenuse ist die längste Seite (gegenüber dem rechten Winkel).",
+examples: [
+{
+question: "Berechne sin(α), wenn Gegenkathete = 7 cm und Hypotenuse = 14 cm",
+solution: "sin(α) = Gegenkathete / Hypotenuse\nsin(α) = 7/14 = 0,5"
+},
+{
+question: "Berechne den Winkel α, wenn sin(α) = 0,5",
+solution: "sin(α) = 0,5\nα = sin⁻¹(0,5) = 30°"
+}
+],
+tips: [
+"Merksatz: Sinus = Gegenkathete durch Hypotenuse",
+"sin(30°) = 0,5 | sin(45°) ≈ 0,707 | sin(60°) ≈ 0,866",
+"Der Sinus-Wert ist immer zwischen 0 und 1"
+]
+},
+exercises: [
+{
+question: "Die Hypotenuse ist 20 cm und die Gegenkathete ist 10 cm. Berechne sin(α) als Dezimalzahl.",
+answer: "0.5",
+unit: "",
+hint: "sin(α) = Gegenkathete / Hypotenuse = 10 / 20",
+type: "input"
+},
+{
+question: "Zeichne ein rechtwinkliges Dreieck und markiere die Gegenkathete zu Winkel α in ROT.",
+answer: "drawing",
+hint: "Die Gegenkathete liegt dem Winkel α gegenüber.",
+type: "drawing"
+},
+{
+question: "Wenn sin(α) = 0,6 und die Hypotenuse = 15 cm, wie lang ist die Gegenkathete?",
+answer: "9",
+unit: "cm",
+hint: "0,6 = Gegenkathete / 15, also Gegenkathete = 0,6 × 15",
+type: "input"
+},
+{
+question: "Eine Rampe ist 8m lang und steigt 2m hoch. Berechne sin(α) des Steigungswinkels.",
+answer: "0.25",
+unit: "",
+hint: "Die Rampe ist die Hypotenuse (8m), die Höhe ist die Gegenkathete (2m)",
+type: "input"
+}
+]
+},
+{
+title: "Kosinus (cos)",
+theory: {
+heading: "Was ist der Kosinus?",
+content: "Der Kosinus eines Winkels im rechtwinkligen Dreieck ist das Verhältnis von Ankathete zu Hypotenuse.",
+formula: "cos(α) = Ankathete / Hypotenuse",
+image: `<svg viewBox="0 0 300 250" className="w-full max-w-md mx-auto">
+<polygon points="50,200 50,50 250,200" fill="#f3e5f5" stroke="#7b1fa2" strokeWidth="2"/>
+<path d="M 70,200 A 20,20 0 0,1 50,180" fill="none" stroke="#d32f2f" strokeWidth="2"/>
+<text x="75" y="195" fontSize="14" fill="#d32f2f">α</text>
+<text x="120" y="220" fontSize="14" fill="#1976d2" fontWeight="bold">Ankathete</text>
+<text x="155" y="120" fontSize="14" fill="#2e7d32" fontWeight="bold">Hypotenuse</text>
+<line x1="50" y1="200" x2="250" y2="200" stroke="#1976d2" strokeWidth="3"/>
+<line x1="50" y1="50" x2="250" y2="200" stroke="#2e7d32" strokeWidth="3"/>
+<rect x="245" y="195" width="10" height="10" fill="none" stroke="#000" strokeWidth="1"/>
+</svg>`,
+explanation: "Die Ankathete liegt am Winkel α an (berührt ihn). Die Hypotenuse ist die längste Seite.",
+examples: [
+{
+question: "Berechne cos(α), wenn Ankathete = 12 cm und Hypotenuse = 13 cm",
+solution: "cos(α) = Ankathete / Hypotenuse\ncos(α) = 12/13 ≈ 0,923"
+},
+{
+question: "Berechne den Winkel α, wenn cos(α) = 0,5",
+solution: "cos(α) = 0,5\nα = cos⁻¹(0,5) = 60°"
+}
+],
+tips: [
+"Merksatz: Kosinus = Ankathete durch Hypotenuse",
+"cos(30°) ≈ 0,866 | cos(45°) ≈ 0,707 | cos(60°) = 0,5",
+"Die Ankathete berührt den Winkel, den wir betrachten"
+]
+},
+exercises: [
+{
+question: "Die Ankathete ist 8 cm und die Hypotenuse ist 10 cm. Berechne cos(α) als Dezimalzahl.",
+answer: "0.8",
+unit: "",
+hint: "cos(α) = Ankathete / Hypotenuse = 8 / 10",
+type: "input"
+},
+{
+question: "Zeichne ein rechtwinkliges Dreieck und markiere die Ankathete zu Winkel α in BLAU.",
+answer: "drawing",
+hint: "Die Ankathete berührt den Winkel α.",
+type: "drawing"
+},
+{
+question: "Wenn cos(α) = 0,75 und die Hypotenuse = 16 cm, wie lang ist die Ankathete?",
+answer: "12",
+unit: "cm",
+hint: "0,75 = Ankathete / 16, also Ankathete = 0,75 × 16",
+type: "input"
+},
+{
+question: "Ein Dach hat eine Länge von 6m (Hypotenuse) und die horizontale Breite beträgt 5m (Ankathete). Berechne cos(α). (Runde auf 3 Nachkommastellen)",
+answer: "0.833",
+unit: "",
+hint: "cos(α) = 5 / 6, dann in Dezimalzahl umrechnen",
+type: "input"
+}
+]
+},
+{
+title: "Tangens (tan)",
+theory: {
+heading: "Was ist der Tangens?",
+content: "Der Tangens eines Winkels im rechtwinkligen Dreieck ist das Verhältnis von Gegenkathete zu Ankathete.",
+formula: "tan(α) = Gegenkathete / Ankathete",
+image: `<svg viewBox="0 0 300 250" className="w-full max-w-md mx-auto">
+<polygon points="50,200 50,50 250,200" fill="#e8f5e9" stroke="#388e3c" strokeWidth="2"/>
+<path d="M 70,200 A 20,20 0 0,1 50,180" fill="none" stroke="#d32f2f" strokeWidth="2"/>
+<text x="75" y="195" fontSize="14" fill="#d32f2f">α</text>
+<text x="260" y="130" fontSize="14" fill="#1976d2" fontWeight="bold">Gegen</text>
+<text x="120" y="220" fontSize="14" fill="#f57c00" fontWeight="bold">Ankathete</text>
+<line x1="250" y1="200" x2="250" y2="50" stroke="#1976d2" strokeWidth="3"/>
+<line x1="50" y1="200" x2="250" y2="200" stroke="#f57c00" strokeWidth="3"/>
+<rect x="245" y="195" width="10" height="10" fill="none" stroke="#000" strokeWidth="1"/>
+</svg>`,
+explanation: "Beim Tangens brauchen wir die Hypotenuse nicht! Wir teilen nur die beiden Katheten.",
+examples: [
+{
+question: "Berechne tan(α), wenn Gegenkathete = 6 cm und Ankathete = 8 cm",
+solution: "tan(α) = Gegenkathete / Ankathete\ntan(α) = 6/8 = 0,75"
+},
+{
+question: "Berechne den Winkel α, wenn tan(α) = 1",
+solution: "tan(α) = 1\nα = tan⁻¹(1) = 45°"
+}
+],
+tips: [
+"Merksatz: Tangens = Gegenkathete durch Ankathete",
+"tan(30°) ≈ 0,577 | tan(45°) = 1 | tan(60°) ≈ 1,732",
+"Tangens kann größer als 1 sein (bei steilen Winkeln)!"
+]
+},
+exercises: [
+{
+question: "Die Gegenkathete ist 9 cm und die Ankathete ist 12 cm. Berechne tan(α) als Dezimalzahl.",
+answer: "0.75",
+unit: "",
+hint: "tan(α) = Gegenkathete / Ankathete = 9 / 12",
+type: "input"
+},
+{
+question: "Zeichne ein rechtwinkliges Dreieck. Markiere die Gegenkathete ROT und die Ankathete BLAU.",
+answer: "drawing",
+hint: "Beide Katheten bilden den rechten Winkel.",
+type: "drawing"
+},
+{
+question: "Wenn tan(α) = 2 und die Ankathete = 5 cm, wie lang ist die Gegenkathete?",
+answer: "10",
+unit: "cm",
+hint: "2 = Gegenkathete / 5, also Gegenkathete = 2 × 5",
+type: "input"
+},
+{
+question: "Ein Berg steigt auf 100m Strecke um 40m an. Berechne tan(α) der Steigung.",
+answer: "0.4",
+unit: "",
+hint: "Höhe (40m) ist die Gegenkathete, Strecke (100m) ist die Ankathete",
+type: "input"
+},
+{
+question: "Ein Turm wirft einen Schatten von 30m. Der Turm ist 24m hoch. Berechne tan(α) des Sonnenwinkels.",
+answer: "0.8",
+unit: "",
+hint: "Turmhöhe (24m) ist die Gegenkathete, Schatten (30m) ist die Ankathete",
+type: "input"
+}
+]
+}
+];
 
-		const lessons = [
-		{
-			title: "Satz des Pythagoras",
-			theory: {
-				heading: "Was ist der Satz des Pythagoras?",
-				content: "In einem rechtwinkligen Dreieck gilt: Die Summe der Quadrate der Katheten ist gleich dem Quadrat der Hypotenuse.",
-				formula: "a² + b² = c²",
-				image: `<svg viewBox="0 0 300 250" className="w-full max-w-md mx-auto">
-					<polygon points="50,200 50,50 250,200" fill="#e3f2fd" stroke="#1976d2" strokeWidth="2"/>
-					<text x="35" y="130" fontSize="16" fill="#d32f2f">a</text>
-					<text x="150" y="235" fontSize="16" fill="#d32f2f">b</text>
-					<text x="155" y="120" fontSize="16" fill="#1976d2">c</text>
-					<rect x="45" y="195" width="10" height="10" fill="none" stroke="#000" strokeWidth="1"/>
-					<text x="100" y="180" fontSize="14" fill="#000">a² + b² = c²</text>
-					</svg>`,
-				explanation: "Die Hypotenuse (c) ist die längste Seite und liegt gegenüber dem rechten Winkel. Die beiden Katheten (a und b) bilden den rechten Winkel.",
-				examples: [
-				{
-					question: "Berechne die Hypotenuse c, wenn a = 3 cm und b = 4 cm",
-					solution: "a² + b² = c²\n3² + 4² = c²\n9 + 16 = c²\n25 = c²\nc = √25 = 5 cm"
-				},
-				{
-					question: "Berechne die Kathete a, wenn c = 13 cm und b = 5 cm",
-					solution: "a² + b² = c²\na² + 5² = 13²\na² + 25 = 169\na² = 144\na = √144 = 12 cm"
-				}
-				],
-				tips: [
-				"Die Hypotenuse ist IMMER die längste Seite",
-				"Du kannst die Formel umstellen: a² = c² - b² oder b² = c² - a²",
-				"Vergiss nicht die Wurzel zu ziehen am Ende!"
-				]
-			},
-			exercises: [
-			{
-				question: "Ein rechtwinkliges Dreieck hat die Katheten a = 6 cm und b = 8 cm. Wie lang ist die Hypotenuse c?",
-				answer: "10",
-				unit: "cm",
-				hint: "Nutze die Formel a² + b² = c² und setze die Werte ein: 6² + 8² = c²",
-				type: "input"
-			},
-			{
-				question: "Die Hypotenuse c = 15 cm und eine Kathete a = 9 cm. Berechne die andere Kathete b.",
-				answer: "12",
-				unit: "cm",
-				hint: "Forme die Formel um: b² = c² - a², dann b² = 15² - 9²",
-				type: "input"
-			},
-			{
-				question: "Zeichne ein rechtwinkliges Dreieck mit den Katheten a = 3 cm und b = 4 cm. Beschrifte alle Seiten.",
-				answer: "drawing",
-				hint: "Zeichne erst den rechten Winkel, dann die beiden Katheten und verbinde die Enden für die Hypotenuse.",
-				type: "drawing"
-			},
-			{
-				question: "Eine Leiter (5m lang) lehnt an einer Wand. Der Fußpunkt der Leiter ist 3m von der Wand entfernt. Wie hoch reicht die Leiter an der Wand?",
-				answer: "4",
-				unit: "m",
-				hint: "Die Leiter ist die Hypotenuse (c=5m), der Abstand zur Wand ist eine Kathete (b=3m). Gesucht ist die Höhe (a).",
-				type: "input"
-			},
-			{
-				question: "Ein Fußballplatz ist 90m lang und 60m breit. Wie lang ist die Diagonale des Platzes? (Runde auf 2 Nachkommastellen)",
-				answer: "108.17",
-				unit: "m",
-				hint: "Die Länge und Breite sind die beiden Katheten. Gesucht ist die Diagonale (Hypotenuse).",
-				type: "input"
-			}
-			]
-		},
-		{
-			title: "Sinus (sin)",
-			theory: {
-				heading: "Was ist der Sinus?",
-				content: "Der Sinus eines Winkels im rechtwinkligen Dreieck ist das Verhältnis von Gegenkathete zu Hypotenuse.",
-				formula: "sin(α) = Gegenkathete / Hypotenuse",
-				image: `<svg viewBox="0 0 300 250" className="w-full max-w-md mx-auto">
-					<polygon points="50,200 50,50 250,200" fill="#fff3e0" stroke="#f57c00" strokeWidth="2"/>
-					<path d="M 70,200 A 20,20 0 0,1 50,180" fill="none" stroke="#d32f2f" strokeWidth="2"/>
-					<text x="75" y="195" fontSize="14" fill="#d32f2f">α</text>
-					<text x="140" y="130" fontSize="14" fill="#1976d2" fontWeight="bold">Gegenkathete</text>
-					<text x="155" y="120" fontSize="14" fill="#2e7d32" fontWeight="bold">Hypotenuse</text>
-					<line x1="250" y1="200" x2="250" y2="50" stroke="#1976d2" strokeWidth="3"/>
-					<line x1="50" y1="50" x2="250" y2="200" stroke="#2e7d32" strokeWidth="3"/>
-					<rect x="245" y="195" width="10" height="10" fill="none" stroke="#000" strokeWidth="1"/>
-					</svg>`,
-				explanation: "Die Gegenkathete liegt dem Winkel α gegenüber. Die Hypotenuse ist die längste Seite (gegenüber dem rechten Winkel).",
-				examples: [
-				{
-					question: "Berechne sin(α), wenn Gegenkathete = 7 cm und Hypotenuse = 14 cm",
-					solution: "sin(α) = Gegenkathete / Hypotenuse\nsin(α) = 7/14 = 0,5"
-				},
-				{
-					question: "Berechne den Winkel α, wenn sin(α) = 0,5",
-					solution: "sin(α) = 0,5\nα = sin⁻¹(0,5) = 30°"
-				}
-				],
-				tips: [
-				"Merksatz: Sinus = Gegenkathete durch Hypotenuse",
-				"sin(30°) = 0,5 | sin(45°) ≈ 0,707 | sin(60°) ≈ 0,866",
-				"Der Sinus-Wert ist immer zwischen 0 und 1"
-				]
-			},
-			exercises: [
-			{
-				question: "Die Hypotenuse ist 20 cm und die Gegenkathete ist 10 cm. Berechne sin(α) als Dezimalzahl.",
-				answer: "0.5",
-				unit: "",
-				hint: "sin(α) = Gegenkathete / Hypotenuse = 10 / 20",
-				type: "input"
-			},
-			{
-				question: "Zeichne ein rechtwinkliges Dreieck und markiere die Gegenkathete zu Winkel α in ROT.",
-				answer: "drawing",
-				hint: "Die Gegenkathete liegt dem Winkel α gegenüber.",
-				type: "drawing"
-			},
-			{
-				question: "Wenn sin(α) = 0,6 und die Hypotenuse = 15 cm, wie lang ist die Gegenkathete?",
-				answer: "9",
-				unit: "cm",
-				hint: "0,6 = Gegenkathete / 15, also Gegenkathete = 0,6 × 15",
-				type: "input"
-			},
-			{
-				question: "Eine Rampe ist 8m lang und steigt 2m hoch. Berechne sin(α) des Steigungswinkels.",
-				answer: "0.25",
-				unit: "",
-				hint: "Die Rampe ist die Hypotenuse (8m), die Höhe ist die Gegenkathete (2m)",
-				type: "input"
-			}
-			]
-		},
-		{
-			title: "Kosinus (cos)",
-			theory: {
-				heading: "Was ist der Kosinus?",
-				content: "Der Kosinus eines Winkels im rechtwinkligen Dreieck ist das Verhältnis von Ankathete zu Hypotenuse.",
-				formula: "cos(α) = Ankathete / Hypotenuse",
-				image: `<svg viewBox="0 0 300 250" className="w-full max-w-md mx-auto">
-					<polygon points="50,200 50,50 250,200" fill="#f3e5f5" stroke="#7b1fa2" strokeWidth="2"/>
-					<path d="M 70,200 A 20,20 0 0,1 50,180" fill="none" stroke="#d32f2f" strokeWidth="2"/>
-					<text x="75" y="195" fontSize="14" fill="#d32f2f">α</text>
-					<text x="120" y="220" fontSize="14" fill="#1976d2" fontWeight="bold">Ankathete</text>
-					<text x="155" y="120" fontSize="14" fill="#2e7d32" fontWeight="bold">Hypotenuse</text>
-					<line x1="50" y1="200" x2="250" y2="200" stroke="#1976d2" strokeWidth="3"/>
-					<line x1="50" y1="50" x2="250" y2="200" stroke="#2e7d32" strokeWidth="3"/>
-					<rect x="245" y="195" width="10" height="10" fill="none" stroke="#000" strokeWidth="1"/>
-					</svg>`,
-				explanation: "Die Ankathete liegt am Winkel α an (berührt ihn). Die Hypotenuse ist die längste Seite.",
-				examples: [
-				{
-					question: "Berechne cos(α), wenn Ankathete = 12 cm und Hypotenuse = 13 cm",
-					solution: "cos(α) = Ankathete / Hypotenuse\ncos(α) = 12/13 ≈ 0,923"
-				},
-				{
-					question: "Berechne den Winkel α, wenn cos(α) = 0,5",
-					solution: "cos(α) = 0,5\nα = cos⁻¹(0,5) = 60°"
-				}
-				],
-				tips: [
-				"Merksatz: Kosinus = Ankathete durch Hypotenuse",
-				"cos(30°) ≈ 0,866 | cos(45°) ≈ 0,707 | cos(60°) = 0,5",
-				"Die Ankathete berührt den Winkel, den wir betrachten"
-				]
-			},
-			exercises: [
-			{
-				question: "Die Ankathete ist 8 cm und die Hypotenuse ist 10 cm. Berechne cos(α) als Dezimalzahl.",
-				answer: "0.8",
-				unit: "",
-				hint: "cos(α) = Ankathete / Hypotenuse = 8 / 10",
-				type: "input"
-			},
-			{
-				question: "Zeichne ein rechtwinkliges Dreieck und markiere die Ankathete zu Winkel α in BLAU.",
-				answer: "drawing",
-				hint: "Die Ankathete berührt den Winkel α.",
-				type: "drawing"
-			},
-			{
-				question: "Wenn cos(α) = 0,75 und die Hypotenuse = 16 cm, wie lang ist die Ankathete?",
-				answer: "12",
-				unit: "cm",
-				hint: "0,75 = Ankathete / 16, also Ankathete = 0,75 × 16",
-				type: "input"
-			},
-			{
-				question: "Ein Dach hat eine Länge von 6m (Hypotenuse) und die horizontale Breite beträgt 5m (Ankathete). Berechne cos(α). (Runde auf 3 Nachkommastellen)",
-				answer: "0.833",
-				unit: "",
-				hint: "cos(α) = 5 / 6, dann in Dezimalzahl umrechnen",
-				type: "input"
-			}
-			]
-		},
-		{
-			title: "Tangens (tan)",
-			theory: {
-				heading: "Was ist der Tangens?",
-				content: "Der Tangens eines Winkels im rechtwinkligen Dreieck ist das Verhältnis von Gegenkathete zu Ankathete.",
-				formula: "tan(α) = Gegenkathete / Ankathete",
-				image: `<svg viewBox="0 0 300 250" className="w-full max-w-md mx-auto">
-					<polygon points="50,200 50,50 250,200" fill="#e8f5e9" stroke="#388e3c" strokeWidth="2"/>
-					<path d="M 70,200 A 20,20 0 0,1 50,180" fill="none" stroke="#d32f2f" strokeWidth="2"/>
-					<text x="75" y="195" fontSize="14" fill="#d32f2f">α</text>
-					<text x="260" y="130" fontSize="14" fill="#1976d2" fontWeight="bold">Gegen</text>
-					<text x="120" y="220" fontSize="14" fill="#f57c00" fontWeight="bold">Ankathete</text>
-					<line x1="250" y1="200" x2="250" y2="50" stroke="#1976d2" strokeWidth="3"/>
-					<line x1="50" y1="200" x2="250" y2="200" stroke="#f57c00" strokeWidth="3"/>
-					<rect x="245" y="195" width="10" height="10" fill="none" stroke="#000" strokeWidth="1"/>
-					</svg>`,
-				explanation: "Beim Tangens brauchen wir die Hypotenuse nicht! Wir teilen nur die beiden Katheten.",
-				examples: [
-				{
-					question: "Berechne tan(α), wenn Gegenkathete = 6 cm und Ankathete = 8 cm",
-					solution: "tan(α) = Gegenkathete / Ankathete\ntan(α) = 6/8 = 0,75"
-				},
-				{
-					question: "Berechne den Winkel α, wenn tan(α) = 1",
-					solution: "tan(α) = 1\nα = tan⁻¹(1) = 45°"
-				}
-				],
-				tips: [
-				"Merksatz: Tangens = Gegenkathete durch Ankathete",
-				"tan(30°) ≈ 0,577 | tan(45°) = 1 | tan(60°) ≈ 1,732",
-				"Tangens kann größer als 1 sein (bei steilen Winkeln)!"
-				]
-			},
-			exercises: [
-			{
-				question: "Die Gegenkathete ist 9 cm und die Ankathete ist 12 cm. Berechne tan(α) als Dezimalzahl.",
-				answer: "0.75",
-				unit: "",
-				hint: "tan(α) = Gegenkathete / Ankathete = 9 / 12",
-				type: "input"
-			},
-			{
-				question: "Zeichne ein rechtwinkliges Dreieck. Markiere die Gegenkathete ROT und die Ankathete BLAU.",
-				answer: "drawing",
-				hint: "Beide Katheten bilden den rechten Winkel.",
-				type: "drawing"
-			},
-			{
-				question: "Wenn tan(α) = 2 und die Ankathete = 5 cm, wie lang ist die Gegenkathete?",
-				answer: "10",
-				unit: "cm",
-				hint: "2 = Gegenkathete / 5, also Gegenkathete = 2 × 5",
-				type: "input"
-			},
-			{
-				question: "Ein Berg steigt auf 100m Strecke um 40m an. Berechne tan(α) der Steigung.",
-				answer: "0.4",
-				unit: "",
-				hint: "Höhe (40m) ist die Gegenkathete, Strecke (100m) ist die Ankathete",
-				type: "input"
-			},
-			{
-				question: "Ein Turm wirft einen Schatten von 30m. Der Turm ist 24m hoch. Berechne tan(α) des Sonnenwinkels.",
-				answer: "0.8",
-				unit: "",
-				hint: "Turmhöhe (24m) ist die Gegenkathete, Schatten (30m) ist die Ankathete",
-				type: "input"
-			}
-			]
-		}
-		];
-
-		// Calculator functions
-		const handleCalcNumber = (num) => {
-			setCalcDisplay(calcDisplay === '0' ? num : calcDisplay + num);
-		};
-
-		const handleCalcOperation = (op) => {
-			setCalcMemory(parseFloat(calcDisplay));
-			setCalcOperation(op);
-			setCalcDisplay('0');
-		};
-
-		const handleCalcEquals = () => {
-			if (calcMemory !== null && calcOperation) {
-				const current = parseFloat(calcDisplay);
-				let result;
-				switch (calcOperation) {
-					case '+': result = calcMemory + current; break;
-					case '-': result = calcMemory - current; break;
-					case '*': result = calcMemory * current; break;
-					case '/': result = calcMemory / current; break;
-					case '^': result = Math.pow(calcMemory, current); break;
-					default: result = current;
-				}
-				setCalcDisplay(result.toString());
-				setCalcMemory(null);
-				setCalcOperation(null);
-			}
-		};
-
-			const handleCalcClear = () => {
-				setCalcDisplay('0');
-				setCalcMemory(null);
-				setCalcOperation(null);
-			};
-
-			const handleCalcSqrt = () => {
-				setCalcDisplay(Math.sqrt(parseFloat(calcDisplay)).toString());
-			};
-
-			const handleCalcSin = () => {
-				const radians = parseFloat(calcDisplay) * Math.PI / 180;
-				setCalcDisplay(Math.sin(radians).toFixed(4));
-			};
-
-			const handleCalcCos = () => {
-				const radians = parseFloat(calcDisplay) * Math.PI / 180;
-				setCalcDisplay(Math.cos(radians).toFixed(4));
-			};
-
-			const handleCalcTan = () => {
-				const radians = parseFloat(calcDisplay) * Math.PI / 180;
-				setCalcDisplay(Math.tan(radians).toFixed(4));
-			};
-
-			// Drawing functions
-			const startDrawing = (exerciseIdx, e) => {
-				const canvas = canvasRefs.current[exerciseIdx];
-				if (!canvas) return;
-
-					const rect = canvas.getBoundingClientRect();
-					const x = e.clientX - rect.left;
-					const y = e.clientY - rect.top;
-
-					const ctx = canvas.getContext('2d');
-					ctx.beginPath();
-					ctx.moveTo(x, y);
-					setIsDrawing({ ...isDrawing, [exerciseIdx]: true });
-			};
-
-			const draw = (exerciseIdx, e) => {
-				if (!isDrawing[exerciseIdx]) return;
-
-				const canvas = canvasRefs.current[exerciseIdx];
-				if (!canvas) return;
-
-					const rect = canvas.getBoundingClientRect();
-					const x = e.clientX - rect.left;
-					const y = e.clientY - rect.top;
-
-					const ctx = canvas.getContext('2d');
-					ctx.strokeStyle = canvasColor;
-					ctx.lineWidth = 2;
-					ctx.lineTo(x, y);
-					ctx.stroke();
-			};
-
-			const stopDrawing = (exerciseIdx) => {
-				setIsDrawing({ ...isDrawing, [exerciseIdx]: false });
-			};
-
-			const clearCanvas = (exerciseIdx) => {
-				const canvas = canvasRefs.current[exerciseIdx];
-				if (!canvas) return;
-					const ctx = canvas.getContext('2d');
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
-			};
-
-			const handleAnswer = (exerciseIdx, value) => {
-				setAnswers({
-					...answers,
-					[`${currentLesson}-${exerciseIdx}`]: value
-				});
-			};
-
-			const checkAnswer = (exerciseIdx) => {
-				const key = `${currentLesson}-${exerciseIdx}`;
-				const exercise = lessons[currentLesson].exercises[exerciseIdx];
-
-				if (exercise.type === 'drawing') {
-					setSubmitted({ ...submitted, [key]: 'completed' });
-					return;
-					}
-
-					const userAnswer = parseFloat(answers[key]);
-					const correctAnswer = parseFloat(exercise.answer);
-
-					setSubmitted({
-						...submitted,
-						[key]: Math.abs(userAnswer - correctAnswer) < 0.1
-					});
-			};
-
-			const toggleHint = (exerciseIdx) => {
-				const key = `${currentLesson}-${exerciseIdx}`;
-				setShowHint({
-					...showHint,
-					[key]: !showHint[key]
-				});
-			};
-
-			const lesson = lessons[currentLesson];
-
-			return (
-				<div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
-				<div className="max-w-6xl mx-auto">
-				{/* Header */}
-				<div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-				<div className="flex items-center justify-between">
-				<div>
-				<div className="flex items-center gap-3 mb-2">
-				<span className="text-3xl">📚</span>
-				<h1 className="text-3xl font-bold text-gray-800">Trigonometrie Lernbuch</h1>
-				</div>
-				<p className="text-gray-600">9. Klasse Realschule • Satz des Pythagoras & Winkelfunktionen</p>
-				</div>
-				<button
-				onClick={() => setShowCalculator(!showCalculator)}
-				className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors shadow-md flex items-center gap-2"
-				>
-				<span className="text-xl">🧮</span>
-				Taschenrechner
-				</button>
-				</div>
-				</div>
-
-				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-				{/* Main Content */}
-				<div className="lg:col-span-2">
-				{/* Lesson Selection */}
-				<div className="bg-white rounded-lg shadow-lg p-4 mb-6">
-				<div className="flex gap-2 mb-4">
-				{lessons.map((l, idx) => (
-					<button
-					key={idx}
-					onClick={() => {
-						setCurrentLesson(idx);
-						setMode('theory');
-					}}
-					className={`flex-1 py-2 px-3 rounded font-medium transition-all ${
-						idx === currentLesson
-						? 'bg-blue-600 text-white shadow-md'
-						: 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-						}`}
-					>
-					{idx + 1}. {l.title}
-					</button>
-					))}
-				</div>
-
-				{/* Mode Toggle */}
-				<div className="flex gap-2">
-				<button
-				onClick={() => setMode('theory')}
-				className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-					mode === 'theory'
-					? 'bg-green-600 text-white shadow-md'
-					: 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-					}`}
-				>
-				<span className="text-xl">📖</span>
-				Erklärung lernen
-				</button>
-				<button
-				onClick={() => setMode('practice')}
-				className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-					mode === 'practice'
-					? 'bg-orange-600 text-white shadow-md'
-					: 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-					}`}
-				>
-				<span className="text-xl">✏️</span>
-				Aufgaben üben
-				</button>
-				</div>
-				</div>
-
-				{/* Theory Mode */}
-				{mode === 'theory' && (
-					<div className="bg-white rounded-lg shadow-lg p-6">
-					<div className="flex items-center gap-2 mb-4">
-					<span className="text-2xl">📐</span>
-					<h2 className="text-2xl font-bold text-gray-800">{lesson.theory.heading}</h2>
-					</div>
-
-					<p className="text-lg text-gray-700 mb-4">{lesson.theory.content}</p>
-
-					<div className="bg-blue-50 border-l-4 border-blue-600 p-4 mb-4">
-					<p className="text-2xl font-mono font-bold text-blue-900">{lesson.theory.formula}</p>
-					</div>
-
-					<div className="mb-6 bg-gray-50 p-4 rounded-lg">
-					<p className="text-gray-700 italic">{lesson.theory.explanation}</p>
-					</div>
-
-					<div dangerouslySetInnerHTML={{ __html: lesson.theory.image }} className="mb-6" />
-
-					<div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-6">
-					<h3 className="font-bold text-gray-800 mb-2">💡 Wichtige Tipps:</h3>
-					<ul className="space-y-1">
-					{lesson.theory.tips.map((tip, idx) => (
-						<li key={idx} className="text-gray-700">• {tip}</li>
-						))}
-					</ul>
-					</div>
-
-					<h3 className="text-xl font-bold text-gray-800 mb-3">📚 Beispielaufgaben:</h3>
-					{lesson.theory.examples.map((example, idx) => (
-						<div key={idx} className="bg-green-50 rounded-lg p-4 mb-3 border-2 border-green-200">
-						<p className="font-semibold text-gray-800 mb-2">Beispiel {idx + 1}: {example.question}</p>
-						<div className="bg-white p-3 rounded">
-						<p className="font-semibold text-green-700 mb-1">Lösung:</p>
-						<pre className="text-sm text-gray-700 font-mono whitespace-pre-wrap">
-						{example.solution}
-						</pre>
-						</div>
-						</div>
-						))}
-
-					<div className="mt-6 p-4 bg-purple-50 border-2 border-purple-300 rounded-lg">
-					<p className="text-center text-purple-800 font-semibold">
-					✅ Wenn du die Erklärung verstanden hast, klicke oben auf "Aufgaben üben"!
-					</p>
-					</div>
-					</div>
-					)}
-
-				{/* Practice Mode */}
-				{mode === 'practice' && (
-					<div className="bg-white rounded-lg shadow-lg p-6">
-					<div className="bg-orange-100 border-l-4 border-orange-600 p-4 mb-6">
-					<h2 className="text-2xl font-bold text-gray-800 mb-2">📝 Probearbeit: {lesson.title}</h2>
-					<p className="text-gray-700">Löse die Aufgaben ohne auf die Erklärungen zu schauen!</p>
-					</div>
-
-					{lesson.exercises.map((exercise, idx) => {
-						const key = `${currentLesson}-${idx}`;
-						const isCorrect = submitted[key];
-						return (
-							<div key={idx} className="bg-blue-50 rounded-lg p-5 mb-4 border-2 border-blue-200">
-							<p className="font-semibold text-gray-800 mb-3">Aufgabe {idx + 1}: {exercise.question}</p>
-
-							{exercise.type === 'drawing' ? (
-								<div className="mb-4">
-								<div className="flex gap-2 mb-2">
-								<input
-								type="color"
-								value={canvasColor}
-								onChange={(e) => setCanvasColor(e.target.value)}
-								className="w-12 h-10 cursor-pointer"
-								/>
-								<button
-								onClick={() => clearCanvas(idx)}
-								className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 flex items-center gap-2"
-								>
-								<span>🗑️</span>
-								Löschen
-								</button>
-								</div>
-								<canvas
-								ref={el => canvasRefs.current[idx] = el}
-								width={600}
-								height={400}
-								onMouseDown={(e) => startDrawing(idx, e)}
-								onMouseMove={(e) => draw(idx, e)}
-								onMouseUp={() => stopDrawing(idx)}
-								onMouseLeave={() => stopDrawing(idx)}
-								className="border-2 border-gray-300 rounded cursor-crosshair bg-white w-full"
-								style={{ touchAction: 'none' }}
-								/>
-								</div>
-								) : (
-									<div className="flex gap-2 mb-4">
-									<input
-									type="number"
-									step="0.01"
-									value={answers[key] || ''}
-									onChange={(e) => handleAnswer(idx, e.target.value)}
-									className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-									placeholder="Deine Antwort..."
-									disabled={submitted[key] !== undefined}
-									/>
-									{exercise.unit && <span className="flex items-center text-gray-700 font-medium">{exercise.unit}</span>}
-									</div>
-								)}
-
-							<div className="flex gap-2">
-							<button
-							onClick={() => checkAnswer(idx)}
-							disabled={submitted[key] !== undefined}
-							className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-								submitted[key] === undefined
-								? 'bg-blue-600 text-white hover:bg-blue-700'
-								: submitted[key] === true
-								? 'bg-green-600 text-white'
-								: submitted[key] === 'completed'
-								? 'bg-purple-600 text-white'
-								: 'bg-red-600 text-white'
-								}`}
-							>
-							{submitted[key] === undefined ? (
-								<>Prüfen</>
-								) : submitted[key] === true ? (
-									<CheckCircle className="w-5 h-5" />  → ✅
-								) : submitted[key] === 'completed' ? (
-									<Eye className="w-5 h-5" />  → 👁️
-								) : (
-									<XCircle className="w-5 h-5" />  → ❌
-								)}
-							</button>
-
-							<button
-							onClick={() => toggleHint(idx)}
-							className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 flex items-center gap-2"
-							>
-							<Eye className="w-5 h-5" />
-							Tipp
-							</button>
-							</div>
-
-							{showHint[key] && (
-								<div className="mt-3 bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded">
-								<p className="text-sm text-gray-700">💡 {exercise.hint}</p>
-								</div>
-								)}
-
-							{submitted[key] === false && (
-								<div className="mt-3 bg-red-50 border-l-4 border-red-500 p-3 rounded">
-								<p className="text-sm text-gray-700">
-								❌ Die richtige Antwort ist: {exercise.answer} {exercise.unit}
-								</p>
-								</div>
-								)}
-							</div>
-						);
-					})}
-					</div>
-					)}
-				</div>
-
-				{/* Sidebar */}
-				<div className="space-y-6">
-				{/* Progress Card */}
-				<div className="bg-white rounded-lg shadow-lg p-6">
-				<h3 className="text-xl font-bold text-gray-800 mb-4">📊 Dein Fortschritt</h3>
-				<div className="space-y-3">
-				{lessons.map((l, idx) => {
-					const completed = l.exercises.filter((_, exerciseIdx) => 
-						submitted[`${idx}-${exerciseIdx}`] === true || 
-						submitted[`${idx}-${exerciseIdx}`] === 'completed'
-					).length;
-					const total = l.exercises.length;
-					const percentage = total > 0 ? (completed / total) * 100 : 0;
-
-					return (
-						<div key={idx} className="bg-gray-50 rounded-lg p-3">
-						<div className="flex justify-between mb-1">
-						<span className="text-sm font-medium text-gray-700">{l.title}</span>
-						<span className="text-sm text-gray-600">{completed}/{total}</span>
-						</div>
-						<div className="w-full bg-gray-200 rounded-full h-2">
-						<div 
-						className="bg-green-600 h-2 rounded-full transition-all duration-300"
-						style={{ width: `${percentage}%` }}
-						/>
-						</div>
-						</div>
-					);
-				})}
-				</div>
-				</div>
-
-				{/* Quick Tips */}
-				<div className="bg-white rounded-lg shadow-lg p-6">
-				<h3 className="text-xl font-bold text-gray-800 mb-4">⚡ Schnelltipps</h3>
-				<div className="space-y-2 text-sm text-gray-700">
-				<p>• Zeichne dir immer eine Skizze</p>
-				<p>• Beschrifte alle bekannten Werte</p>
-				<p>• Überlege welche Formel passt</p>
-				<p>• Rechne Schritt für Schritt</p>
-				<p>• Prüfe ob das Ergebnis sinnvoll ist</p>
-				</div>
-				</div>
-
-				{/* Formulas Reference */}
-				<div className="bg-white rounded-lg shadow-lg p-6">
-				<h3 className="text-xl font-bold text-gray-800 mb-4">📐 Formelsammlung</h3>
-				<div className="space-y-3 text-sm">
-				<div className="bg-blue-50 p-3 rounded">
-				<p className="font-bold text-blue-900">Pythagoras:</p>
-				<p className="font-mono">a² + b² = c²</p>
-				</div>
-				<div className="bg-green-50 p-3 rounded">
-				<p className="font-bold text-green-900">Sinus:</p>
-				<p className="font-mono">sin(α) = GK / H</p>
-				</div>
-				<div className="bg-purple-50 p-3 rounded">
-				<p className="font-bold text-purple-900">Kosinus:</p>
-				<p className="font-mono">cos(α) = AK / H</p>
-				</div>
-				<div className="bg-orange-50 p-3 rounded">
-				<p className="font-bold text-orange-900">Tangens:</p>
-				<p className="font-mono">tan(α) = GK / AK</p>
-				</div>
-				</div>
-				</div>
-				</div>
-				</div>
-
-				{/* Calculator Modal */}
-				{showCalculator && (
-					<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-					<div className="bg-white rounded-lg shadow-2xl p-6 max-w-md w-full">
-					<div className="flex justify-between items-center mb-4">
-					<h3 className="text-xl font-bold text-gray-800">🧮 Taschenrechner</h3>
-					<button
-					onClick={() => setShowCalculator(false)}
-					className="text-gray-500 hover:text-gray-700"
-					>
-					✕
-					</button>
-					</div>
-
-					<div className="bg-gray-100 p-4 rounded-lg mb-4">
-					<div className="text-right text-3xl font-mono text-gray-800 overflow-x-auto">
-					{calcDisplay}
-					</div>
-					</div>
-
-					<div className="grid grid-cols-4 gap-2">
-					<button onClick={handleCalcClear} className="bg-red-500 text-white p-4 rounded-lg font-bold hover:bg-red-600">C</button>
-					<button onClick={() => handleCalcOperation('^')} className="bg-blue-500 text-white p-4 rounded-lg font-bold hover:bg-blue-600">x²</button>
-					<button onClick={handleCalcSqrt} className="bg-blue-500 text-white p-4 rounded-lg font-bold hover:bg-blue-600">√</button>
-					<button onClick={() => handleCalcOperation('/')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">÷</button>
-
-					<button onClick={() => handleCalcNumber('7')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">7</button>
-					<button onClick={() => handleCalcNumber('8')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">8</button>
-					<button onClick={() => handleCalcNumber('9')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">9</button>
-					<button onClick={() => handleCalcOperation('*')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">×</button>
-
-					<button onClick={() => handleCalcNumber('4')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">4</button>
-					<button onClick={() => handleCalcNumber('5')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">5</button>
-					<button onClick={() => handleCalcNumber('6')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">6</button>
-					<button onClick={() => handleCalcOperation('-')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">−></button>
-
-					<button onClick={() => handleCalcNumber('1')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">1</button>
-					<button onClick={() => handleCalcNumber('2')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">2</button>
-					<button onClick={() => handleCalcNumber('3')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">3</button>
-					<button onClick={() => handleCalcOperation('+')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">+</button>
-
-					<button onClick={() => handleCalcNumber('0')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300 col-span-2">0</button>
-					<button onClick={() => handleCalcNumber('.')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">.</button>
-					<button onClick={handleCalcEquals} className="bg-green-600 text-white p-4 rounded-lg font-bold hover:bg-green-700">=</button>
-
-					<button onClick={handleCalcSin} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">sin</button>
-					<button onClick={handleCalcCos} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">cos</button>
-					<button onClick={handleCalcTan} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">tan</button>
-					<div className="bg-gray-100 p-2 rounded-lg text-xs text-center flex items-center justify-center text-gray-600">
-					Winkel in °
-					</div>
-					</div>
-					</div>
-					</div>
-					)}
-				</div>
-				</div>
-			);
+const handleCalcNumber = (num) => {
+setCalcDisplay(calcDisplay === '0' ? num : calcDisplay + num);
 };
 
-	// React App rendern  
-	ReactDOM.createRoot(document.getElementById('root')).render(<TrigonometryLearningApp />);
-	</script>
-	</body>
-	</html>
+const handleCalcOperation = (op) => {
+setCalcMemory(parseFloat(calcDisplay));
+setCalcOperation(op);
+setCalcDisplay('0');
+};
+
+const handleCalcEquals = () => {
+if (calcMemory !== null && calcOperation) {
+const current = parseFloat(calcDisplay);
+let result;
+switch (calcOperation) {
+case '+': result = calcMemory + current; break;
+case '-': result = calcMemory - current; break;
+case '*': result = calcMemory * current; break;
+case '/': result = calcMemory / current; break;
+case '^': result = Math.pow(calcMemory, current); break;
+default: result = current;
+}
+setCalcDisplay(result.toString());
+setCalcMemory(null);
+setCalcOperation(null);
+}
+};
+
+const handleCalcClear = () => {
+setCalcDisplay('0');
+setCalcMemory(null);
+setCalcOperation(null);
+};
+
+const handleCalcSqrt = () => {
+setCalcDisplay(Math.sqrt(parseFloat(calcDisplay)).toString());
+};
+
+const handleCalcSin = () => {
+const radians = parseFloat(calcDisplay) * Math.PI / 180;
+setCalcDisplay(Math.sin(radians).toFixed(4));
+};
+
+const handleCalcCos = () => {
+const radians = parseFloat(calcDisplay) * Math.PI / 180;
+setCalcDisplay(Math.cos(radians).toFixed(4));
+};
+
+const handleCalcTan = () => {
+const radians = parseFloat(calcDisplay) * Math.PI / 180;
+setCalcDisplay(Math.tan(radians).toFixed(4));
+};
+
+const startDrawing = (exerciseIdx, e) => {
+const canvas = canvasRefs.current[exerciseIdx];
+if (!canvas) return;
+const rect = canvas.getBoundingClientRect();
+const x = e.clientX - rect.left;
+const y = e.clientY - rect.top;
+const ctx = canvas.getContext('2d');
+ctx.beginPath();
+ctx.moveTo(x, y);
+setIsDrawing({ ...isDrawing, [exerciseIdx]: true });
+};
+
+const draw = (exerciseIdx, e) => {
+if (!isDrawing[exerciseIdx]) return;
+const canvas = canvasRefs.current[exerciseIdx];
+if (!canvas) return;
+const rect = canvas.getBoundingClientRect();
+const x = e.clientX - rect.left;
+const y = e.clientY - rect.top;
+const ctx = canvas.getContext('2d');
+ctx.strokeStyle = canvasColor;
+ctx.lineWidth = 2;
+ctx.lineTo(x, y);
+ctx.stroke();
+};
+
+const stopDrawing = (exerciseIdx) => {
+setIsDrawing({ ...isDrawing, [exerciseIdx]: false });
+};
+
+const clearCanvas = (exerciseIdx) => {
+const canvas = canvasRefs.current[exerciseIdx];
+if (!canvas) return;
+const ctx = canvas.getContext('2d');
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+};
+
+const handleAnswer = (exerciseIdx, value) => {
+setAnswers({
+...answers,
+[`${currentLesson}-${exerciseIdx}`]: value
+});
+};
+
+const checkAnswer = (exerciseIdx) => {
+const key = `${currentLesson}-${exerciseIdx}`;
+const exercise = lessons[currentLesson].exercises[exerciseIdx];
+
+if (exercise.type === 'drawing') {
+setSubmitted({ ...submitted, [key]: 'completed' });
+return;
+}
+
+const userAnswer = parseFloat(answers[key]);
+const correctAnswer = parseFloat(exercise.answer);
+
+setSubmitted({
+...submitted,
+[key]: Math.abs(userAnswer - correctAnswer) < 0.1
+});
+};
+
+const toggleHint = (exerciseIdx) => {
+const key = `${currentLesson}-${exerciseIdx}`;
+setShowHint({
+...showHint,
+[key]: !showHint[key]
+});
+};
+
+const lesson = lessons[currentLesson];
+
+return (
+<div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
+<div className="max-w-6xl mx-auto">
+<div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+<div className="flex items-center justify-between">
+<div>
+<div className="flex items-center gap-3 mb-2">
+<span className="text-3xl">📚</span>
+<h1 className="text-3xl font-bold text-gray-800">Trigonometrie Lernbuch</h1>
+</div>
+<p className="text-gray-600">9. Klasse Realschule • Satz des Pythagoras & Winkelfunktionen</p>
+</div>
+<button
+onClick={() => setShowCalculator(!showCalculator)}
+className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors shadow-md flex items-center gap-2"
+>
+<span className="text-xl">🧮</span>
+Taschenrechner
+</button>
+</div>
+</div>
+
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div className="lg:col-span-2">
+<div className="bg-white rounded-lg shadow-lg p-4 mb-6">
+<div className="flex gap-2 mb-4">
+{lessons.map((l, idx) => (
+<button
+key={idx}
+onClick={() => {
+setCurrentLesson(idx);
+setMode('theory');
+}}
+className={`flex-1 py-2 px-3 rounded font-medium transition-all ${
+idx === currentLesson
+? 'bg-blue-600 text-white shadow-md'
+: 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+}`}
+>
+{idx + 1}. {l.title}
+</button>
+))}
+</div>
+
+<div className="flex gap-2">
+<button
+onClick={() => setMode('theory')}
+className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
+mode === 'theory'
+? 'bg-green-600 text-white shadow-md'
+: 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+}`}
+>
+<span className="text-xl">📖</span>
+Erklärung lernen
+</button>
+<button
+onClick={() => setMode('practice')}
+className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
+mode === 'practice'
+? 'bg-orange-600 text-white shadow-md'
+: 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+}`}
+>
+<span className="text-xl">✏️</span>
+Aufgaben üben
+</button>
+</div>
+</div>
+
+{mode === 'theory' && (
+<div className="bg-white rounded-lg shadow-lg p-6">
+<div className="flex items-center gap-2 mb-4">
+<span className="text-2xl">📐</span>
+<h2 className="text-2xl font-bold text-gray-800">{lesson.theory.heading}</h2>
+</div>
+
+<p className="text-lg text-gray-700 mb-4">{lesson.theory.content}</p>
+
+<div className="bg-blue-50 border-l-4 border-blue-600 p-4 mb-4">
+<p className="text-2xl font-mono font-bold text-blue-900">{lesson.theory.formula}</p>
+</div>
+
+<div className="mb-6 bg-gray-50 p-4 rounded-lg">
+<p className="text-gray-700 italic">{lesson.theory.explanation}</p>
+</div>
+
+<div dangerouslySetInnerHTML={{ __html: lesson.theory.image }} className="mb-6" />
+
+<div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-6">
+<h3 className="font-bold text-gray-800 mb-2">💡 Wichtige Tipps:</h3>
+<ul className="space-y-1">
+{lesson.theory.tips.map((tip, idx) => (
+<li key={idx} className="text-gray-700">• {tip}</li>
+))}
+</ul>
+</div>
+
+<h3 className="text-xl font-bold text-gray-800 mb-3">📚 Beispielaufgaben:</h3>
+{lesson.theory.examples.map((example, idx) => (
+<div key={idx} className="bg-green-50 rounded-lg p-4 mb-3 border-2 border-green-200">
+<p className="font-semibold text-gray-800 mb-2">Beispiel {idx + 1}: {example.question}</p>
+<div className="bg-white p-3 rounded">
+<p className="font-semibold text-green-700 mb-1">Lösung:</p>
+<pre className="text-sm text-gray-700 font-mono whitespace-pre-wrap">
+{example.solution}
+</pre>
+</div>
+</div>
+))}
+
+<div className="mt-6 p-4 bg-purple-50 border-2 border-purple-300 rounded-lg">
+<p className="text-center text-purple-800 font-semibold">
+✅ Wenn du die Erklärung verstanden hast, klicke oben auf "Aufgaben üben"!
+</p>
+</div>
+</div>
+)}
+
+{mode === 'practice' && (
+<div className="bg-white rounded-lg shadow-lg p-6">
+<div className="bg-orange-100 border-l-4 border-orange-600 p-4 mb-6">
+<h2 className="text-2xl font-bold text-gray-800 mb-2">📝 Probearbeit: {lesson.title}</h2>
+<p className="text-gray-700">Löse die Aufgaben ohne auf die Erklärungen zu schauen!</p>
+</div>
+
+{lesson.exercises.map((exercise, idx) => {
+const key = `${currentLesson}-${idx}`;
+const isCorrect = submitted[key];
+return (
+<div key={idx} className="bg-blue-50 rounded-lg p-5 mb-4 border-2 border-blue-200">
+<p className="font-semibold text-gray-800 mb-3">Aufgabe {idx + 1}: {exercise.question}</p>
+
+{exercise.type === 'drawing' ? (
+<div className="mb-4">
+<div className="flex gap-2 mb-2">
+<input
+type="color"
+value={canvasColor}
+onChange={(e) => setCanvasColor(e.target.value)}
+className="w-12 h-10 cursor-pointer"
+/>
+<button
+onClick={() => clearCanvas(idx)}
+className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 flex items-center gap-2"
+>
+<span>🗑️</span>
+Löschen
+</button>
+</div>
+<canvas
+ref={el => canvasRefs.current[idx] = el}
+width={600}
+height={400}
+onMouseDown={(e) => startDrawing(idx, e)}
+onMouseMove={(e) => draw(idx, e)}
+onMouseUp={() => stopDrawing(idx)}
+onMouseLeave={() => stopDrawing(idx)}
+className="border-2 border-gray-300 rounded cursor-crosshair bg-white w-full"
+style={{ touchAction: 'none' }}
+/>
+</div>
+) : (
+<div className="flex gap-2 mb-4">
+<input
+type="number"
+step="0.01"
+value={answers[key] || ''}
+onChange={(e) => handleAnswer(idx, e.target.value)}
+className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+placeholder="Deine Antwort..."
+disabled={submitted[key] !== undefined}
+/>
+{exercise.unit && <span className="flex items-center text-gray-700 font-medium">{exercise.unit}</span>}
+</div>
+)}
+
+<div className="flex gap-2">
+<button
+onClick={() => checkAnswer(idx)}
+disabled={submitted[key] !== undefined}
+className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
+submitted[key] === undefined
+? 'bg-blue-600 text-white hover:bg-blue-700'
+: submitted[key] === true
+? 'bg-green-600 text-white'
+: submitted[key] === 'completed'
+? 'bg-purple-600 text-white'
+: 'bg-red-600 text-white'
+}`}
+>
+{submitted[key] === undefined ? (
+<>Prüfen</>
+) : submitted[key] === true ? (
+<>✅ Richtig!</>
+) : submitted[key] === 'completed' ? (
+<>✓ Erledigt</>
+) : (
+<>❌ Falsch</>
+)}
+</button>
+
+<button
+onClick={() => toggleHint(idx)}
+className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 flex items-center gap-2"
+>
+💡 Tipp
+</button>
+</div>
+
+{showHint[key] && (
+<div className="mt-3 bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded">
+<p className="text-sm text-gray-700">💡 {exercise.hint}</p>
+</div>
+)}
+
+{submitted[key] === false && (
+<div className="mt-3 bg-red-50 border-l-4 border-red-500 p-3 rounded">
+<p className="text-sm text-gray-700">
+❌ Die richtige Antwort ist: {exercise.answer} {exercise.unit}
+</p>
+</div>
+)}
+</div>
+);
+})}
+</div>
+)}
+</div>
+
+<div className="space-y-6">
+<div className="bg-white rounded-lg shadow-lg p-6">
+<h3 className="text-xl font-bold text-gray-800 mb-4">📊 Dein Fortschritt</h3>
+<div className="space-y-3">
+{lessons.map((l, idx) => {
+const completed = l.exercises.filter((_, exerciseIdx) => 
+submitted[`${idx}-${exerciseIdx}`] === true || 
+submitted[`${idx}-${exerciseIdx}`] === 'completed'
+).length;
+const total = l.exercises.length;
+const percentage = total > 0 ? (completed / total) * 100 : 0;
+
+return (
+<div key={idx} className="bg-gray-50 rounded-lg p-3">
+<div className="flex justify-between mb-1">
+<span className="text-sm font-medium text-gray-700">{l.title}</span>
+<span className="text-sm text-gray-600">{completed}/{total}</span>
+</div>
+<div className="w-full bg-gray-200 rounded-full h-2">
+<div 
+className="bg-green-600 h-2 rounded-full transition-all duration-300"
+style={{ width: `${percentage}%` }}
+/>
+</div>
+</div>
+);
+})}
+</div>
+</div>
+
+<div className="bg-white rounded-lg shadow-lg p-6">
+<h3 className="text-xl font-bold text-gray-800 mb-4">⚡ Schnelltipps</h3>
+<div className="space-y-2 text-sm text-gray-700">
+<p>• Zeichne dir immer eine Skizze</p>
+<p>• Beschrifte alle bekannten Werte</p>
+<p>• Überlege welche Formel passt</p>
+<p>• Rechne Schritt für Schritt</p>
+<p>• Prüfe ob das Ergebnis sinnvoll ist</p>
+</div>
+</div>
+
+<div className="bg-white rounded-lg shadow-lg p-6">
+<h3 className="text-xl font-bold text-gray-800 mb-4">📐 Formelsammlung</h3>
+<div className="space-y-3 text-sm">
+<div className="bg-blue-50 p-3 rounded">
+<p className="font-bold text-blue-900">Pythagoras:</p>
+<p className="font-mono">a² + b² = c²</p>
+</div>
+<div className="bg-green-50 p-3 rounded">
+<p className="font-bold text-green-900">Sinus:</p>
+<p className="font-mono">sin(α) = GK / H</p>
+</div>
+<div className="bg-purple-50 p-3 rounded">
+<p className="font-bold text-purple-900">Kosinus:</p>
+<p className="font-mono">cos(α) = AK / H</p>
+</div>
+<div className="bg-orange-50 p-3 rounded">
+<p className="font-bold text-orange-900">Tangens:</p>
+<p className="font-mono">tan(α) = GK / AK</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{showCalculator && (
+<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+<div className="bg-white rounded-lg shadow-2xl p-6 max-w-md w-full">
+<div className="flex justify-between items-center mb-4">
+<h3 className="text-xl font-bold text-gray-800">🧮 Taschenrechner</h3>
+<button
+onClick={() => setShowCalculator(false)}
+className="text-gray-500 hover:text-gray-700"
+>
+✕
+</button>
+</div>
+
+<div className="bg-gray-100 p-4 rounded-lg mb-4">
+<div className="text-right text-3xl font-mono text-gray-800 overflow-x-auto">
+{calcDisplay}
+</div>
+</div>
+
+<div className="grid grid-cols-4 gap-2">
+<button onClick={handleCalcClear} className="bg-red-500 text-white p-4 rounded-lg font-bold hover:bg-red-600">C</button>
+<button onClick={() => handleCalcOperation('^')} className="bg-blue-500 text-white p-4 rounded-lg font-bold hover:bg-blue-600">x²</button>
+<button onClick={handleCalcSqrt} className="bg-blue-500 text-white p-4 rounded-lg font-bold hover:bg-blue-600">√</button>
+<button onClick={() => handleCalcOperation('/')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">÷</button>
+
+<button onClick={() => handleCalcNumber('7')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">7</button>
+<button onClick={() => handleCalcNumber('8')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">8</button>
+<button onClick={() => handleCalcNumber('9')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">9</button>
+<button onClick={() => handleCalcOperation('*')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">×</button>
+
+<button onClick={() => handleCalcNumber('4')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">4</button>
+<button onClick={() => handleCalcNumber('5')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">5</button>
+<button onClick={() => handleCalcNumber('6')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">6</button>
+<button onClick={() => handleCalcOperation('-')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">−</button>
+
+<button onClick={() => handleCalcNumber('1')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">1</button>
+<button onClick={() => handleCalcNumber('2')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">2</button>
+<button onClick={() => handleCalcNumber('3')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">3</button>
+<button onClick={() => handleCalcOperation('+')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">+</button>
+
+<button onClick={() => handleCalcNumber('0')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300 col-span-2">0</button>
+<button onClick={() => handleCalcNumber('.')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">.</button>
+<button onClick={handleCalcEquals} className="bg-green-600 text-white p-4 rounded-lg font-bold hover:bg-green-700">=</button>
+
+<button onClick={handleCalcSin} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">sin</button>
+<button onClick={handleCalcCos} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">cos</button>
+<button onClick={handleCalcTan} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">tan</button>
+<div className="bg-gray-100 p-2 rounded-lg text-xs text-center flex items-center justify-center text-gray-600">
+Winkel in °
+</div>
+</div>
+</div>
+</div>
+)}
+</div>
+</div>
+);
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<TrigonometryLearningApp />);
+</script>
+</body>
+</html>
