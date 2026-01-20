@@ -404,11 +404,14 @@ return;
 const userAnswer = parseFloat(answers[key]);
 const correctAnswer = parseFloat(exercise.answer);
 
+// Prüfe ob die Antwort korrekt ist (mit kleiner Toleranz für Rundungsfehler)
+const tolerance = Math.max(0.01, correctAnswer * 0.001); // 0.1% Toleranz
+const isCorrect = Math.abs(userAnswer - correctAnswer) <= tolerance;
+
 setSubmitted({
 ...submitted,
-[key]: Math.abs(userAnswer - correctAnswer) < 0.1
+[key]: isCorrect
 });
-};
 
 const toggleHint = (exerciseIdx) => {
 const key = `${currentLesson}-${exerciseIdx}`;
@@ -762,8 +765,10 @@ className="text-gray-500 hover:text-gray-700"
 <button onClick={handleCalcSin} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">sin</button>
 <button onClick={handleCalcCos} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">cos</button>
 <button onClick={handleCalcTan} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">tan</button>
-<div className="bg-gray-100 p-2 rounded-lg text-xs text-center flex items-center justify-center text-gray-600">
-Winkel in °
+<button onClick={() => setCalcDisplay((Math.PI).toString())} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">π</button>
+
+<div className="col-span-4 text-xs text-center text-gray-600 mt-2">
+💡 Tipp: Für √100 → Tippe "100" dann "√"
 </div>
 </div>
 </div>
