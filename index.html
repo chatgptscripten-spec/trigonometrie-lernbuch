@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Potenzen Lernbuch - Komplettes Wissen</title>
+<title>Potenzen - Die einfachste Erklärung der Welt</title>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -12,1545 +12,1061 @@
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useRef } = React;
+const { useState } = React;
 
-const PotenzLearningApp = () => {
+const PotenzEinfachApp = () => {
 	const [currentLesson, setCurrentLesson] = useState(0);
-	const [mode, setMode] = useState('theory');
-	const [showHint, setShowHint] = useState({});
-	const [answers, setAnswers] = useState({});
-	const [submitted, setSubmitted] = useState({});
-	const [showCalculator, setShowCalculator] = useState(false);
-	const [calcDisplay, setCalcDisplay] = useState('0');
-	const [calcMemory, setCalcMemory] = useState(null);
-	const [calcOperation, setCalcOperation] = useState(null);
+	const [showExample, setShowExample] = useState({});
+	const [userAnswer, setUserAnswer] = useState('');
+	const [checkResult, setCheckResult] = useState(null);
 
 	const lessons = [
 	{
-		title: "Grundlagen der Potenzen",
-		level: "Klasse 5-6",
-		theory: {
-			heading: "Was ist eine Potenz?",
-			content: "Eine Potenz ist eine abkürzende Schreibweise für wiederholte Multiplikation derselben Zahl.",
-			formula: "aⁿ = a · a · a · ... · a (n-mal)",
-			image: `<svg viewBox="0 0 400 200" className="w-full max-w-md mx-auto">
-				<text x="50" y="100" fontSize="60" fill="#1976d2" fontWeight="bold">2⁴</text>
-				<text x="150" y="100" fontSize="40" fill="#000">=</text>
-				<text x="200" y="100" fontSize="30" fill="#d32f2f">2·2·2·2</text>
-				<text x="50" y="150" fontSize="24" fill="#666">Basis</text>
-				<line x1="70" y1="140" x2="70" y2="110" stroke="#666" strokeWidth="2" markerEnd="url(#arrowhead)"/>
-				<text x="110" y="60" fontSize="24" fill="#666">Exponent</text>
-				<line x1="120" y1="70" x2="95" y2="85" stroke="#666" strokeWidth="2" markerEnd="url(#arrowhead)"/>
-				<defs>
-					<marker id="arrowhead" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
-						<polygon points="0 0, 10 5, 0 10" fill="#666" />
-					</marker>
-				</defs>
-			</svg>`,
-			explanation: "Die Basis ist die Zahl, die multipliziert wird. Der Exponent gibt an, wie oft die Basis mit sich selbst multipliziert wird.",
-			examples: [
-			{
-				question: "Berechne 3⁴",
-				solution: "3⁴ = 3 · 3 · 3 · 3\n= 9 · 3 · 3\n= 27 · 3\n= 81"
-			},
-			{
-				question: "Schreibe als Potenz: 5 · 5 · 5",
-				solution: "5 · 5 · 5 = 5³\n(Die 5 wird 3-mal multipliziert)"
-			},
-			{
-				question: "Berechne 10³",
-				solution: "10³ = 10 · 10 · 10\n= 100 · 10\n= 1000"
-			}
-			],
-			tips: [
-			"Die Basis steht unten, der Exponent steht oben rechts",
-			"2³ spricht man 'zwei hoch drei'",
-			"Eine Potenz ist eine wiederholte Multiplikation",
-			"10ⁿ ergibt eine 1 mit n Nullen dahinter",
-			"Jede Zahl hoch 1 ist die Zahl selbst: a¹ = a"
-			],
-			specialCases: [
-			"a¹ = a (Jede Zahl hoch 1 ist die Zahl selbst)",
-			"a⁰ = 1 (Jede Zahl hoch 0 ist 1, außer 0⁰)",
-			"1ⁿ = 1 (1 hoch beliebig ist immer 1)",
-			"0ⁿ = 0 (0 hoch beliebig ist 0, außer 0⁰)"
-			]
-		},
-		exercises: [
+		title: "Was ist eine Potenz?",
+		emoji: "🎯",
+		color: "blue",
+		simple: "Eine Potenz ist nur eine ABKÜRZUNG für 'dieselbe Zahl mehrmals malnehmen'",
+		
+		visualExamples: [
 		{
-			question: "Berechne 2⁵",
-			answer: "32",
-			unit: "",
-			hint: "2⁵ = 2 · 2 · 2 · 2 · 2",
-			type: "input"
+			normal: "2 · 2 · 2 · 2",
+			short: "2⁴",
+			result: "16",
+			explain: "Statt '2 mal 2 mal 2 mal 2' zu schreiben, schreiben wir einfach 2⁴"
 		},
 		{
-			question: "Berechne 3³",
-			answer: "27",
-			unit: "",
-			hint: "3³ = 3 · 3 · 3",
-			type: "input"
+			normal: "3 · 3 · 3",
+			short: "3³",
+			result: "27",
+			explain: "Die 3 wird 3-mal mit sich selbst multipliziert"
 		},
 		{
-			question: "Berechne 4³",
-			answer: "64",
-			unit: "",
-			hint: "4³ = 4 · 4 · 4 = 16 · 4",
-			type: "input"
+			normal: "5 · 5",
+			short: "5²",
+			result: "25",
+			explain: "5² bedeutet '5 mal 5'"
+		}
+		],
+
+		easyRule: {
+			title: "Die super einfache Regel:",
+			rule: "Die GROSSE Zahl unten sagt 'welche Zahl', die KLEINE Zahl oben sagt 'wie oft'",
+			example: "2⁵ = 2 · 2 · 2 · 2 · 2 = 32"
+		},
+
+		merkhilfe: [
+		"📌 Die große Zahl heißt BASIS (was wird multipliziert?)",
+		"📌 Die kleine Zahl oben heißt EXPONENT (wie oft?)",
+		"📌 2³ sprichst du: 'zwei hoch drei'",
+		"📌 Es ist NUR eine Abkürzung - mehr nicht!"
+		],
+
+		alltagsbeispiele: [
+		{
+			situation: "Du verdoppelst dein Taschengeld 4 Wochen lang",
+			start: "1€ → 2€ → 4€ → 8€ → 16€",
+			potenz: "Das ist 2⁴ = 16€"
 		},
 		{
-			question: "Berechne 5²",
-			answer: "25",
-			unit: "",
-			hint: "5² = 5 · 5",
-			type: "input"
+			situation: "Ein Quadrat mit Seitenlänge 5 cm",
+			start: "Fläche = 5 · 5",
+			potenz: "Das ist 5² = 25 cm²"
 		},
 		{
-			question: "Berechne 10⁴",
-			answer: "10000",
-			unit: "",
-			hint: "10⁴ = 10 · 10 · 10 · 10 = 1 mit 4 Nullen",
-			type: "input"
-		},
-		{
-			question: "Schreibe als Potenz: 7 · 7 · 7 · 7 (nur die Hochzahl eingeben)",
-			answer: "4",
-			unit: "",
-			hint: "Wie oft wird die 7 multipliziert?",
-			type: "input"
-		},
-		{
-			question: "Berechne 6²",
-			answer: "36",
-			unit: "",
-			hint: "6² = 6 · 6",
-			type: "input"
-		},
-		{
-			question: "Was ergibt 9¹?",
-			answer: "9",
-			unit: "",
-			hint: "Jede Zahl hoch 1 ist die Zahl selbst",
-			type: "input"
+			situation: "Ein Würfel mit Kantenlänge 3 cm",
+			start: "Volumen = 3 · 3 · 3",
+			potenz: "Das ist 3³ = 27 cm³"
 		}
 		]
+	},
+	{
+		title: "Die wichtigsten Grundregeln",
+		emoji: "⚡",
+		color: "green",
+		simple: "Es gibt ein paar Spezialfälle, die du dir merken musst:",
+
+		specialCases: [
+		{
+			rule: "Jede Zahl hoch 1 ist die Zahl selbst",
+			examples: ["5¹ = 5", "100¹ = 100", "7¹ = 7"],
+			why: "Weil: Die Zahl kommt nur 1-mal vor",
+			visual: "5¹ = 5 (nur einmal die 5)"
+		},
+		{
+			rule: "Jede Zahl hoch 0 ist immer 1",
+			examples: ["5⁰ = 1", "100⁰ = 1", "7⁰ = 1"],
+			why: "Das ist eine mathematische Regel (einfach so merken!)",
+			visual: "Egal welche Zahl⁰ = immer 1"
+		},
+		{
+			rule: "Jede Zahl hoch 2 heißt 'Quadrat'",
+			examples: ["3² = 9", "4² = 16", "10² = 100"],
+			why: "Weil: 3² ist die Fläche eines Quadrats mit Seite 3",
+			visual: "3² = 3 · 3 = 9"
+		},
+		{
+			rule: "Jede Zahl hoch 3 heißt 'Kubik' oder 'hoch drei'",
+			examples: ["2³ = 8", "3³ = 27", "5³ = 125"],
+			why: "Weil: 2³ ist das Volumen eines Würfels mit Kante 2",
+			visual: "2³ = 2 · 2 · 2 = 8"
+		}
+		],
+
+		easyRule: {
+			title: "Mega wichtig zu wissen:",
+			rule: "a¹ = a (die Zahl selbst) | a⁰ = 1 (immer 1!)",
+			example: "100¹ = 100, aber 100⁰ = 1"
+		}
+	},
+	{
+		title: "Potenzen mit 10",
+		emoji: "🔟",
+		color: "purple",
+		simple: "10er-Potenzen sind SUPER EINFACH - du musst nur Nullen zählen!",
+
+		pattern: {
+			title: "Das einfachste Muster überhaupt:",
+			examples: [
+			{ potenz: "10¹", equals: "10", nullen: "1 Null" },
+			{ potenz: "10²", equals: "100", nullen: "2 Nullen" },
+			{ potenz: "10³", equals: "1.000", nullen: "3 Nullen" },
+			{ potenz: "10⁴", equals: "10.000", nullen: "4 Nullen" },
+			{ potenz: "10⁵", equals: "100.000", nullen: "5 Nullen" },
+			{ potenz: "10⁶", equals: "1.000.000", nullen: "6 Nullen" }
+			]
+		},
+
+		easyRule: {
+			title: "Die super einfache Regel:",
+			rule: "Bei 10ⁿ schreibst du eine 1 und dann genau n Nullen dahinter!",
+			example: "10⁵ = 1 mit 5 Nullen = 100.000"
+		},
+
+		merkhilfe: [
+		"📌 Die Hochzahl = Anzahl der Nullen",
+		"📌 10³ = 1.000 (3 Nullen)",
+		"📌 10⁶ = 1.000.000 (6 Nullen)",
+		"📌 SO einfach ist das!"
+		],
+
+		realBeispiele: [
+		"1 km = 1.000 m = 10³ m",
+		"1 Million = 1.000.000 = 10⁶",
+		"1 Cent = 0,01 € = 10⁻² € (kommt später!)"
+		]
+	},
+	{
+		title: "Potenzen multiplizieren",
+		emoji: "✖️",
+		color: "orange",
+		simple: "Wenn du GLEICHE Zahlen mit verschiedenen Potenzen malst: Addiere die Hochzahlen!",
+
+		rule: {
+			formula: "aⁿ · aᵐ = aⁿ⁺ᵐ",
+			inWorten: "Wenn die BASIS gleich ist: Exponenten ADDIEREN"
+		},
+
+		visualSteps: [
+		{
+			aufgabe: "2³ · 2⁴",
+			bedeutet: "(2·2·2) · (2·2·2·2)",
+			zusammen: "2·2·2·2·2·2·2",
+			lösung: "2⁷",
+			rechnung: "3 + 4 = 7",
+			ergebnis: "128"
+		},
+		{
+			aufgabe: "5² · 5³",
+			bedeutet: "(5·5) · (5·5·5)",
+			zusammen: "5·5·5·5·5",
+			lösung: "5⁵",
+			rechnung: "2 + 3 = 5",
+			ergebnis: "3.125"
+		}
+		],
+
+		easyRule: {
+			title: "Die GOLDENE Regel:",
+			rule: "Gleiche Basis? → Exponenten ADDIEREN!",
+			example: "2³ · 2⁴ = 2⁷ (weil 3+4=7)"
+		},
+
+		merkhilfe: [
+		"⚠️ WICHTIG: Funktioniert NUR bei gleicher Basis!",
+		"✅ 2³ · 2⁴ = 2⁷ (geht!)",
+		"❌ 2³ · 3⁴ = ??? (geht NICHT - verschiedene Basen!)",
+		"📌 Die Basis bleibt IMMER gleich!"
+		],
+
+		fehler: {
+			falsch: "2³ · 2⁴ = 2¹² ❌",
+			richtig: "2³ · 2⁴ = 2⁷ ✅",
+			warum: "Du ADDIERST die Exponenten (3+4=7), du multiplizierst sie NICHT!"
+		}
+	},
+	{
+		title: "Potenzen dividieren",
+		emoji: "➗",
+		color: "red",
+		simple: "Wenn du GLEICHE Zahlen mit verschiedenen Potenzen teilst: Ziehe die Hochzahlen ab!",
+
+		rule: {
+			formula: "aⁿ : aᵐ = aⁿ⁻ᵐ",
+			inWorten: "Wenn die BASIS gleich ist: Exponenten SUBTRAHIEREN"
+		},
+
+		visualSteps: [
+		{
+			aufgabe: "2⁵ : 2²",
+			bedeutet: "(2·2·2·2·2) : (2·2)",
+			kürzen: "Die beiden 2er kürzen sich weg",
+			übrig: "2·2·2",
+			lösung: "2³",
+			rechnung: "5 - 2 = 3",
+			ergebnis: "8"
+		},
+		{
+			aufgabe: "10⁶ : 10⁴",
+			bedeutet: "1.000.000 : 10.000",
+			lösung: "10²",
+			rechnung: "6 - 4 = 2",
+			ergebnis: "100"
+		}
+		],
+
+		easyRule: {
+			title: "Die GOLDENE Regel:",
+			rule: "Gleiche Basis? → Exponenten SUBTRAHIEREN!",
+			example: "2⁵ : 2² = 2³ (weil 5-2=3)"
+		},
+
+		merkhilfe: [
+		"📌 Oben minus unten!",
+		"📌 Zähler-Exponent MINUS Nenner-Exponent",
+		"⚠️ Funktioniert NUR bei gleicher Basis!",
+		"📌 Die Basis bleibt IMMER gleich!"
+		],
+
+		specialCase: {
+			title: "Besonderer Fall:",
+			beispiel: "5³ : 5³ = 5⁰ = 1",
+			warum: "3 - 3 = 0, und jede Zahl hoch 0 ist 1!"
+		}
 	},
 	{
 		title: "Negative Exponenten",
-		level: "Klasse 8-9",
-		theory: {
-			heading: "Was bedeuten negative Exponenten?",
-			content: "Ein negativer Exponent bedeutet den Kehrwert der Potenz mit positivem Exponenten.",
+		emoji: "➖",
+		color: "pink",
+		simple: "Ein MINUS im Exponenten bedeutet: Mach einen BRUCH daraus (drehe um)!",
+
+		rule: {
 			formula: "a⁻ⁿ = 1/aⁿ",
-			image: `<svg viewBox="0 0 400 180" className="w-full max-w-md mx-auto">
-				<text x="50" y="80" fontSize="50" fill="#1976d2" fontWeight="bold">2⁻³</text>
-				<text x="150" y="80" fontSize="40" fill="#000">=</text>
-				<text x="210" y="60" fontSize="35" fill="#d32f2f">1</text>
-				<line x1="200" y1="70" x2="280" y2="70" stroke="#000" strokeWidth="2"/>
-				<text x="210" y="110" fontSize="35" fill="#d32f2f">2³</text>
-				<text x="320" y="80" fontSize="40" fill="#000">=</text>
-				<text x="50" y="150" fontSize="35" fill="#2e7d32">= 1/8 = 0,125</text>
-			</svg>`,
-			explanation: "Bei negativem Exponenten wird der Bruch 1/aⁿ gebildet. Man 'dreht' die Potenz um.",
-			examples: [
-			{
-				question: "Berechne 2⁻²",
-				solution: "2⁻² = 1/2² = 1/4 = 0,25"
-			},
-			{
-				question: "Berechne 10⁻³",
-				solution: "10⁻³ = 1/10³ = 1/1000 = 0,001"
-			},
-			{
-				question: "Schreibe als Potenz: 1/5²",
-				solution: "1/5² = 5⁻²"
-			}
-			],
-			tips: [
-			"Negativer Exponent = Kehrwert bilden",
-			"a⁻ⁿ = 1/aⁿ",
-			"Bei 10⁻ⁿ: Komma um n Stellen nach links",
-			"(1/a)⁻ⁿ = aⁿ (doppelter Kehrwert hebt sich auf)"
-			],
-			specialCases: [
-			"1⁻ⁿ = 1 (Kehrwert von 1 ist 1)",
-			"(-1)⁻ⁿ = (-1)ⁿ (bei ungerader Potenz: -1, bei gerader: 1)"
-			]
+			inWorten: "Negativ = Kehrwert = Bruch mit 1 oben"
 		},
-		exercises: [
+
+		visualSteps: [
 		{
-			question: "Berechne 2⁻³ (als Dezimalzahl)",
-			answer: "0.125",
-			unit: "",
-			hint: "2⁻³ = 1/2³ = 1/8",
-			type: "input"
+			aufgabe: "2⁻³",
+			bedeutet: "Minuszeichen → Bruch!",
+			umwandeln: "1/2³",
+			ausrechnen: "1/8",
+			ergebnis: "0,125"
 		},
 		{
-			question: "Berechne 5⁻² (als Dezimalzahl)",
-			answer: "0.04",
-			unit: "",
-			hint: "5⁻² = 1/5² = 1/25",
-			type: "input"
-		},
-		{
-			question: "Berechne 10⁻² (als Dezimalzahl)",
-			answer: "0.01",
-			unit: "",
-			hint: "10⁻² = 1/10² = 1/100",
-			type: "input"
-		},
-		{
-			question: "Berechne 3⁻¹ als Bruch (Zähler ist 1, nur Nenner eingeben)",
-			answer: "3",
-			unit: "",
-			hint: "3⁻¹ = 1/3¹ = 1/?",
-			type: "input"
-		},
-		{
-			question: "Berechne 4⁻² (als Dezimalzahl)",
-			answer: "0.0625",
-			unit: "",
-			hint: "4⁻² = 1/4² = 1/16",
-			type: "input"
+			aufgabe: "10⁻²",
+			bedeutet: "Minuszeichen → Bruch!",
+			umwandeln: "1/10²",
+			ausrechnen: "1/100",
+			ergebnis: "0,01"
 		}
-		]
-	},
-	{
-		title: "Potenzgesetze: Multiplikation",
-		level: "Klasse 8-10",
-		theory: {
-			heading: "Potenzen mit gleicher Basis multiplizieren",
-			content: "Beim Multiplizieren von Potenzen mit gleicher Basis werden die Exponenten addiert.",
-			formula: "aⁿ · aᵐ = aⁿ⁺ᵐ",
-			image: `<svg viewBox="0 0 400 150" className="w-full max-w-md mx-auto">
-				<text x="30" y="60" fontSize="45" fill="#1976d2" fontWeight="bold">2³ · 2⁴</text>
-				<text x="180" y="60" fontSize="35" fill="#000">=</text>
-				<text x="230" y="60" fontSize="45" fill="#d32f2f" fontWeight="bold">2⁷</text>
-				<text x="30" y="110" fontSize="24" fill="#666">3 + 4 = 7</text>
-				<rect x="20" y="85" width="180" height="35" fill="none" stroke="#2e7d32" strokeWidth="2" strokeDasharray="5,5"/>
-			</svg>`,
-			explanation: "Die Basis bleibt gleich, die Exponenten werden addiert. Das funktioniert nur bei gleicher Basis!",
-			examples: [
-			{
-				question: "Vereinfache 3² · 3⁵",
-				solution: "3² · 3⁵ = 3²⁺⁵ = 3⁷\n= 2187"
-			},
-			{
-				question: "Vereinfache x³ · x⁴",
-				solution: "x³ · x⁴ = x³⁺⁴ = x⁷"
-			},
-			{
-				question: "Berechne 2² · 2³",
-				solution: "2² · 2³ = 2²⁺³ = 2⁵\n= 32"
-			},
-			{
-				question: "Vereinfache 5¹ · 5⁻²",
-				solution: "5¹ · 5⁻² = 5¹⁺⁽⁻²⁾ = 5⁻¹\n= 1/5 = 0,2"
-			}
+		],
+
+		easyRule: {
+			title: "Super einfache Regel:",
+			rule: "Minus im Exponent? → Schreibe 1 durch die Potenz!",
+			example: "5⁻² = 1/5² = 1/25 = 0,04"
+		},
+
+		merkhilfe: [
+		"📌 Minus = Umdrehen!",
+		"📌 2⁻³ = 1/2³ = 1/8",
+		"📌 Aus dem Minus wird ein Bruch",
+		"📌 Der Exponent wird dann positiv: a⁻ⁿ = 1/aⁿ"
+		],
+
+		trick10er: {
+			title: "Besonders einfach bei 10er-Potenzen:",
+			beispiele: [
+			"10⁻¹ = 1/10 = 0,1",
+			"10⁻² = 1/100 = 0,01",
+			"10⁻³ = 1/1.000 = 0,001"
 			],
-			tips: [
-			"Nur bei GLEICHER Basis die Exponenten addieren!",
-			"aⁿ · aᵐ = aⁿ⁺ᵐ",
-			"Auch bei negativen Exponenten: Addition beachten",
-			"Die Basis bleibt IMMER gleich",
-			"2³ · 3² kann NICHT vereinfacht werden (verschiedene Basen!)"
-			],
-			specialCases: [
-			"a⁰ · aⁿ = aⁿ (weil 0 + n = n)",
-			"aⁿ · a⁻ⁿ = a⁰ = 1 (weil n + (-n) = 0)"
-			]
-		},
-		exercises: [
-		{
-			question: "Vereinfache 2³ · 2⁴ (nur den Exponenten eingeben)",
-			answer: "7",
-			unit: "",
-			hint: "3 + 4 = ?",
-			type: "input"
-		},
-		{
-			question: "Berechne das Ergebnis von 3² · 3¹",
-			answer: "27",
-			unit: "",
-			hint: "3²⁺¹ = 3³ = ?",
-			type: "input"
-		},
-		{
-			question: "Vereinfache 5⁴ · 5³ (nur den Exponenten eingeben)",
-			answer: "7",
-			unit: "",
-			hint: "4 + 3 = ?",
-			type: "input"
-		},
-		{
-			question: "Berechne 2¹ · 2⁴",
-			answer: "32",
-			unit: "",
-			hint: "2¹⁺⁴ = 2⁵ = ?",
-			type: "input"
-		},
-		{
-			question: "Vereinfache 7² · 7⁻¹ (nur den Exponenten eingeben)",
-			answer: "1",
-			unit: "",
-			hint: "2 + (-1) = ?",
-			type: "input"
-		},
-		{
-			question: "Berechne 10² · 10³",
-			answer: "100000",
-			unit: "",
-			hint: "10²⁺³ = 10⁵ = ?",
-			type: "input"
+			regel: "Komma wandert nach links!"
 		}
-		]
-	},
-	{
-		title: "Potenzgesetze: Division",
-		level: "Klasse 8-10",
-		theory: {
-			heading: "Potenzen mit gleicher Basis dividieren",
-			content: "Beim Dividieren von Potenzen mit gleicher Basis werden die Exponenten subtrahiert.",
-			formula: "aⁿ : aᵐ = aⁿ⁻ᵐ",
-			image: `<svg viewBox="0 0 400 150" className="w-full max-w-md mx-auto">
-				<text x="30" y="60" fontSize="45" fill="#1976d2" fontWeight="bold">2⁵ : 2²</text>
-				<text x="180" y="60" fontSize="35" fill="#000">=</text>
-				<text x="230" y="60" fontSize="45" fill="#d32f2f" fontWeight="bold">2³</text>
-				<text x="30" y="110" fontSize="24" fill="#666">5 - 2 = 3</text>
-				<rect x="20" y="85" width="180" height="35" fill="none" stroke="#2e7d32" strokeWidth="2" strokeDasharray="5,5"/>
-			</svg>`,
-			explanation: "Die Basis bleibt gleich, die Exponenten werden subtrahiert. Exponenten: Zähler minus Nenner!",
-			examples: [
-			{
-				question: "Vereinfache 3⁷ : 3⁴",
-				solution: "3⁷ : 3⁴ = 3⁷⁻⁴ = 3³\n= 27"
-			},
-			{
-				question: "Vereinfache x⁸ : x³",
-				solution: "x⁸ : x³ = x⁸⁻³ = x⁵"
-			},
-			{
-				question: "Berechne 5⁴ : 5⁴",
-				solution: "5⁴ : 5⁴ = 5⁴⁻⁴ = 5⁰\n= 1"
-			},
-			{
-				question: "Vereinfache 2³ : 2⁵",
-				solution: "2³ : 2⁵ = 2³⁻⁵ = 2⁻²\n= 1/4 = 0,25"
-			}
-			],
-			tips: [
-			"Nur bei GLEICHER Basis die Exponenten subtrahieren!",
-			"aⁿ : aᵐ = aⁿ⁻ᵐ",
-			"Zähler-Exponent MINUS Nenner-Exponent",
-			"Ergebnis kann negativer Exponent sein!",
-			"aⁿ : aⁿ = a⁰ = 1"
-			],
-			specialCases: [
-			"aⁿ : a⁰ = aⁿ (weil n - 0 = n)",
-			"a⁰ : aⁿ = a⁻ⁿ (weil 0 - n = -n)",
-			"aⁿ : aⁿ = 1 (weil n - n = 0 und a⁰ = 1)"
-			]
-		},
-		exercises: [
-		{
-			question: "Vereinfache 2⁶ : 2³ (nur den Exponenten eingeben)",
-			answer: "3",
-			unit: "",
-			hint: "6 - 3 = ?",
-			type: "input"
-		},
-		{
-			question: "Berechne 3⁵ : 3²",
-			answer: "27",
-			unit: "",
-			hint: "3⁵⁻² = 3³ = ?",
-			type: "input"
-		},
-		{
-			question: "Vereinfache 5⁷ : 5⁴ (nur den Exponenten eingeben)",
-			answer: "3",
-			unit: "",
-			hint: "7 - 4 = ?",
-			type: "input"
-		},
-		{
-			question: "Berechne 2⁸ : 2⁵",
-			answer: "8",
-			unit: "",
-			hint: "2⁸⁻⁵ = 2³ = ?",
-			type: "input"
-		},
-		{
-			question: "Vereinfache 4³ : 4³ (nur den Exponenten eingeben)",
-			answer: "0",
-			unit: "",
-			hint: "3 - 3 = ? (und a⁰ = 1)",
-			type: "input"
-		},
-		{
-			question: "Berechne 10⁵ : 10²",
-			answer: "1000",
-			unit: "",
-			hint: "10⁵⁻² = 10³ = ?",
-			type: "input"
-		}
-		]
 	},
 	{
 		title: "Potenz einer Potenz",
-		level: "Klasse 8-10",
-		theory: {
-			heading: "Eine Potenz potenzieren",
-			content: "Beim Potenzieren einer Potenz werden die Exponenten multipliziert.",
+		emoji: "🔄",
+		color: "indigo",
+		simple: "Wenn eine Potenz nochmal hoch etwas ist: MULTIPLIZIERE die Exponenten!",
+
+		rule: {
 			formula: "(aⁿ)ᵐ = aⁿ·ᵐ",
-			image: `<svg viewBox="0 0 400 150" className="w-full max-w-md mx-auto">
-				<text x="30" y="60" fontSize="45" fill="#1976d2" fontWeight="bold">(2³)⁴</text>
-				<text x="150" y="60" fontSize="35" fill="#000">=</text>
-				<text x="200" y="60" fontSize="45" fill="#d32f2f" fontWeight="bold">2¹²</text>
-				<text x="30" y="110" fontSize="24" fill="#666">3 · 4 = 12</text>
-				<rect x="20" y="85" width="160" height="35" fill="none" stroke="#2e7d32" strokeWidth="2" strokeDasharray="5,5"/>
-			</svg>`,
-			explanation: "Die Basis bleibt gleich, die Exponenten werden multipliziert. Klammern sind wichtig!",
-			examples: [
-			{
-				question: "Vereinfache (3²)³",
-				solution: "(3²)³ = 3²·³ = 3⁶\n= 729"
-			},
-			{
-				question: "Vereinfache (x⁴)²",
-				solution: "(x⁴)² = x⁴·² = x⁸"
-			},
-			{
-				question: "Berechne (2²)³",
-				solution: "(2²)³ = 2²·³ = 2⁶\n= 64"
-			},
-			{
-				question: "Vereinfache (5⁻²)³",
-				solution: "(5⁻²)³ = 5⁻²·³ = 5⁻⁶\n= 1/15625"
-			}
-			],
-			tips: [
-			"Exponenten werden MULTIPLIZIERT, nicht addiert!",
-			"(aⁿ)ᵐ = aⁿ·ᵐ",
-			"Klammern zeigen an, dass die ganze Potenz potenziert wird",
-			"Bei negativen Exponenten: Vorzeichen beachten!",
-			"Unterschied: (2³)² = 2⁶, aber 2³ · 2² = 2⁵"
-			],
-			specialCases: [
-			"(aⁿ)¹ = aⁿ (weil n · 1 = n)",
-			"(a¹)ⁿ = aⁿ (weil 1 · n = n)",
-			"(aⁿ)⁰ = 1 (weil das Ergebnis a⁰ ist)"
-			]
+			inWorten: "Potenz von Potenz: Exponenten MULTIPLIZIEREN"
 		},
-		exercises: [
+
+		visualSteps: [
 		{
-			question: "Vereinfache (2²)³ (nur den Exponenten eingeben)",
-			answer: "6",
-			unit: "",
-			hint: "2 · 3 = ?",
-			type: "input"
+			aufgabe: "(2³)²",
+			bedeutet: "2³ zweimal mit sich selbst malnehmen",
+			ausschreiben: "2³ · 2³",
+			zusammen: "2⁶",
+			rechnung: "3 · 2 = 6",
+			ergebnis: "64"
 		},
 		{
-			question: "Berechne (3²)²",
-			answer: "81",
-			unit: "",
-			hint: "(3²)² = 3⁴ = ?",
-			type: "input"
-		},
-		{
-			question: "Vereinfache (5³)² (nur den Exponenten eingeben)",
-			answer: "6",
-			unit: "",
-			hint: "3 · 2 = ?",
-			type: "input"
-		},
-		{
-			question: "Berechne (2³)²",
-			answer: "64",
-			unit: "",
-			hint: "(2³)² = 2⁶ = ?",
-			type: "input"
-		},
-		{
-			question: "Vereinfache (4²)³ (nur den Exponenten eingeben)",
-			answer: "6",
-			unit: "",
-			hint: "2 · 3 = ?",
-			type: "input"
-		},
-		{
-			question: "Berechne (10²)²",
-			answer: "10000",
-			unit: "",
-			hint: "(10²)² = 10⁴ = ?",
-			type: "input"
+			aufgabe: "(5²)³",
+			bedeutet: "5² dreimal mit sich selbst malnehmen",
+			ausschreiben: "5² · 5² · 5²",
+			zusammen: "5⁶",
+			rechnung: "2 · 3 = 6",
+			ergebnis: "15.625"
 		}
-		]
+		],
+
+		easyRule: {
+			title: "Die GOLDENE Regel:",
+			rule: "Klammer mit Potenz hoch Zahl? → Exponenten MULTIPLIZIEREN!",
+			example: "(2³)⁴ = 2¹² (weil 3·4=12)"
+		},
+
+		merkhilfe: [
+		"📌 Bei Klammer: Exponenten MAL nehmen!",
+		"📌 (aⁿ)ᵐ = aⁿ·ᵐ",
+		"⚠️ NICHT addieren! MULTIPLIZIEREN!",
+		"📌 Die Basis bleibt gleich!"
+		],
+
+		unterschied: {
+			title: "WICHTIG - Unterschied verstehen:",
+			beispiel1: "2³ · 2² = 2⁵ (Exponenten addieren)",
+			beispiel2: "(2³)² = 2⁶ (Exponenten multiplizieren)",
+			merke: "MIT Klammer → mal | OHNE Klammer → plus"
+		}
 	},
 	{
 		title: "Produkt potenzieren",
-		level: "Klasse 9-10",
-		theory: {
-			heading: "Ein Produkt potenzieren",
-			content: "Beim Potenzieren eines Produkts wird jeder Faktor einzeln potenziert.",
+		emoji: "📦",
+		color: "teal",
+		simple: "Wenn ein MAL in der Klammer ist und alles hoch Zahl: Verteile die Potenz auf BEIDE!",
+
+		rule: {
 			formula: "(a · b)ⁿ = aⁿ · bⁿ",
-			image: `<svg viewBox="0 0 400 150" className="w-full max-w-md mx-auto">
-				<text x="20" y="60" fontSize="40" fill="#1976d2" fontWeight="bold">(2 · 3)⁴</text>
-				<text x="160" y="60" fontSize="35" fill="#000">=</text>
-				<text x="210" y="60" fontSize="40" fill="#d32f2f" fontWeight="bold">2⁴ · 3⁴</text>
-				<text x="20" y="110" fontSize="20" fill="#666">= 16 · 81 = 1296</text>
-			</svg>`,
-			explanation: "Der Exponent wird auf jeden Faktor im Produkt angewendet. Die Klammer wird 'aufgelöst'.",
-			examples: [
-			{
-				question: "Vereinfache (2 · 5)³",
-				solution: "(2 · 5)³ = 2³ · 5³\n= 8 · 125\n= 1000"
-			},
-			{
-				question: "Vereinfache (x · y)⁴",
-				solution: "(x · y)⁴ = x⁴ · y⁴"
-			},
-			{
-				question: "Berechne (3 · 4)²",
-				solution: "(3 · 4)² = 3² · 4²\n= 9 · 16\n= 144"
-			},
-			{
-				question: "Vereinfache (2a)³",
-				solution: "(2a)³ = 2³ · a³\n= 8a³"
-			}
-			],
-			tips: [
-			"Jeder Faktor wird einzeln potenziert",
-			"(a · b)ⁿ = aⁿ · bⁿ",
-			"Klammern 'verteilen' den Exponenten",
-			"Auch bei Variablen anwendbar!",
-			"(2x)³ = 2³ · x³ = 8x³"
-			],
-			specialCases: [
-			"(a · b)¹ = a · b (keine Änderung)",
-			"(a · b)⁰ = 1 (Produkt hoch 0 ist 1)",
-			"(-a)² = (-1)² · a² = a² (negativ verschwindet bei gerader Potenz)"
-			]
+			inWorten: "Klammer mit MAL: Jeder Faktor bekommt die Potenz!"
 		},
-		exercises: [
+
+		visualSteps: [
 		{
-			question: "Berechne (2 · 3)³",
-			answer: "216",
-			unit: "",
-			hint: "(2 · 3)³ = 2³ · 3³ = 8 · 27",
-			type: "input"
+			aufgabe: "(2 · 3)⁴",
+			verteilen: "2⁴ · 3⁴",
+			ausrechnen: "16 · 81",
+			ergebnis: "1.296"
 		},
 		{
-			question: "Berechne (2 · 5)²",
-			answer: "100",
-			unit: "",
-			hint: "(2 · 5)² = 2² · 5² = 4 · 25",
-			type: "input"
-		},
-		{
-			question: "Vereinfache (3x)² - Berechne nur den Zahlenfaktor",
-			answer: "9",
-			unit: "",
-			hint: "(3x)² = 3² · x² = ? · x²",
-			type: "input"
-		},
-		{
-			question: "Berechne (4 · 2)²",
-			answer: "64",
-			unit: "",
-			hint: "(4 · 2)² = 4² · 2² = 16 · 4",
-			type: "input"
-		},
-		{
-			question: "Vereinfache (5a)² - Berechne nur den Zahlenfaktor",
-			answer: "25",
-			unit: "",
-			hint: "(5a)² = 5² · a² = ? · a²",
-			type: "input"
+			aufgabe: "(2 · 5)³",
+			verteilen: "2³ · 5³",
+			ausrechnen: "8 · 125",
+			ergebnis: "1.000"
 		}
-		]
+		],
+
+		easyRule: {
+			title: "Die super einfache Regel:",
+			rule: "Klammer mit MAL drin, alles hoch n? → Jeder bekommt hoch n!",
+			example: "(3 · 4)² = 3² · 4² = 9 · 16 = 144"
+		},
+
+		merkhilfe: [
+		"📌 Die Potenz 'verteilt' sich auf alles in der Klammer",
+		"📌 (a · b)ⁿ = aⁿ · bⁿ",
+		"📌 Funktioniert bei 2, 3 oder mehr Faktoren!",
+		"📌 (2·3·4)² = 2²·3²·4²"
+		],
+
+		variablen: {
+			title: "Mit Zahlen UND Buchstaben:",
+			beispiel: "(3x)² = 3² · x² = 9x²",
+			wichtig: "Die 3 UND das x bekommen beide das Quadrat!"
+		}
 	},
 	{
-		title: "Quotient potenzieren",
-		level: "Klasse 9-10",
-		theory: {
-			heading: "Einen Bruch potenzieren",
-			content: "Beim Potenzieren eines Bruchs werden Zähler und Nenner einzeln potenziert.",
+		title: "Bruch potenzieren",
+		emoji: "🍕",
+		color: "yellow",
+		simple: "Wenn ein BRUCH hoch Zahl: Oben UND unten bekommen die Potenz!",
+
+		rule: {
 			formula: "(a/b)ⁿ = aⁿ/bⁿ",
-			image: `<svg viewBox="0 0 400 180" className="w-full max-w-md mx-auto">
-				<text x="20" y="50" fontSize="35" fill="#1976d2" fontWeight="bold">(</text>
-				<text x="40" y="40" fontSize="30" fill="#1976d2">2</text>
-				<line x1="35" y1="50" x2="75" y2="50" stroke="#000" strokeWidth="2"/>
-				<text x="40" y="75" fontSize="30" fill="#1976d2">3</text>
-				<text x="75" y="50" fontSize="35" fill="#1976d2" fontWeight="bold">)³</text>
-				<text x="150" y="50" fontSize="30" fill="#000">=</text>
-				<text x="195" y="40" fontSize="30" fill="#d32f2f">2³</text>
-				<line x1="190" y1="50" x2="240" y2="50" stroke="#000" strokeWidth="2"/>
-				<text x="195" y="75" fontSize="30" fill="#d32f2f">3³</text>
-				<text x="270" y="50" fontSize="30" fill="#000">=</text>
-				<text x="315" y="40" fontSize="25" fill="#2e7d32">8</text>
-				<line x1="310" y1="50" x2="350" y2="50" stroke="#000" strokeWidth="2"/>
-				<text x="310" y="75" fontSize="25" fill="#2e7d32">27</text>
-			</svg>`,
-			explanation: "Der Exponent wird sowohl auf den Zähler als auch auf den Nenner angewendet.",
-			examples: [
-			{
-				question: "Berechne (2/5)²",
-				solution: "(2/5)² = 2²/5²\n= 4/25\n= 0,16"
-			},
-			{
-				question: "Vereinfache (x/y)³",
-				solution: "(x/y)³ = x³/y³"
-			},
-			{
-				question: "Berechne (3/4)²",
-				solution: "(3/4)² = 3²/4²\n= 9/16\n= 0,5625"
-			},
-			{
-				question: "Vereinfache (1/2)⁴",
-				solution: "(1/2)⁴ = 1⁴/2⁴\n= 1/16\n= 0,0625"
-			}
-			],
-			tips: [
-			"Zähler und Nenner einzeln potenzieren",
-			"(a/b)ⁿ = aⁿ/bⁿ",
-			"Auch bei Variablen anwendbar",
-			"(1/a)ⁿ = 1/aⁿ = a⁻ⁿ",
-			"Ergebnis oft als Dezimalzahl angeben"
-			],
-			specialCases: [
-			"(a/b)¹ = a/b (keine Änderung)",
-			"(a/b)⁰ = 1 (Bruch hoch 0 ist 1)",
-			"(a/b)⁻ⁿ = (b/a)ⁿ (negativer Exponent dreht den Bruch um)"
-			]
+			inWorten: "Bruch potenzieren: Zähler UND Nenner potenzieren!"
 		},
-		exercises: [
+
+		visualSteps: [
 		{
-			question: "Berechne (1/2)³ als Dezimalzahl",
-			answer: "0.125",
-			unit: "",
-			hint: "(1/2)³ = 1³/2³ = 1/8",
-			type: "input"
+			aufgabe: "(2/3)³",
+			verteilen: "2³/3³",
+			ausrechnen: "8/27",
+			ergebnis: "≈ 0,296"
 		},
 		{
-			question: "Berechne (2/3)² - Zähler des Bruchs",
-			answer: "4",
-			unit: "",
-			hint: "(2/3)² = 2²/3² = ?/9",
-			type: "input"
-		},
-		{
-			question: "Berechne (3/5)² als Dezimalzahl",
-			answer: "0.36",
-			unit: "",
-			hint: "(3/5)² = 3²/5² = 9/25",
-			type: "input"
-		},
-		{
-			question: "Berechne (1/3)² als Dezimalzahl (2 Nachkommastellen)",
-			answer: "0.11",
-			unit: "",
-			hint: "(1/3)² = 1/9 ≈ 0,111...",
-			type: "input"
-		},
-		{
-			question: "Berechne (1/10)² als Dezimalzahl",
-			answer: "0.01",
-			unit: "",
-			hint: "(1/10)² = 1/100",
-			type: "input"
+			aufgabe: "(1/2)⁴",
+			verteilen: "1⁴/2⁴",
+			ausrechnen: "1/16",
+			ergebnis: "0,0625"
 		}
-		]
+		],
+
+		easyRule: {
+			title: "Die super einfache Regel:",
+			rule: "Bruch hoch n? → Oben hoch n DURCH unten hoch n!",
+			example: "(3/4)² = 3²/4² = 9/16"
+		},
+
+		merkhilfe: [
+		"📌 Zähler bekommt die Potenz",
+		"📌 Nenner bekommt die Potenz",
+		"📌 BEIDE separat potenzieren!",
+		"📌 (a/b)ⁿ = aⁿ/bⁿ"
+		],
+
+		trick: {
+			title: "Cooler Trick:",
+			beispiel: "(1/10)³ = 1³/10³ = 1/1.000 = 0,001",
+			regel: "1 im Zähler bleibt 1, nur der Nenner wird größer!"
+		}
 	},
 	{
-		title: "Zehnerpotenzen",
-		level: "Klasse 7-9",
-		theory: {
-			heading: "Potenzen zur Basis 10",
-			content: "Zehnerpotenzen sind besonders wichtig für große und kleine Zahlen. Sie haben ein einfaches Muster.",
-			formula: "10ⁿ = 1 mit n Nullen dahinter",
-			image: `<svg viewBox="0 0 400 200" className="w-full max-w-md mx-auto">
-				<text x="20" y="40" fontSize="25" fill="#1976d2">10³ = 1.000</text>
-				<text x="20" y="75" fontSize="25" fill="#1976d2">10² = 100</text>
-				<text x="20" y="110" fontSize="25" fill="#1976d2">10¹ = 10</text>
-				<text x="20" y="145" fontSize="25" fill="#1976d2">10⁰ = 1</text>
-				<text x="20" y="180" fontSize="25" fill="#d32f2f">10⁻² = 0,01</text>
-				<rect x="10" y="15" width="200" height="180" fill="none" stroke="#2e7d32" strokeWidth="2"/>
-			</svg>`,
-			explanation: "Positiver Exponent = Nullen anfügen. Negativer Exponent = Komma nach links verschieben.",
-			examples: [
-			{
-				question: "Berechne 10⁵",
-				solution: "10⁵ = 100.000\n(5 Nullen)"
-			},
-			{
-				question: "Berechne 10⁻³",
-				solution: "10⁻³ = 0,001\n(Komma 3 Stellen nach links)"
-			},
-			{
-				question: "Schreibe 1.000.000 als Zehnerpotenz",
-				solution: "1.000.000 = 10⁶\n(6 Nullen)"
-			},
-			{
-				question: "Schreibe 0,0001 als Zehnerpotenz",
-				solution: "0,0001 = 10⁻⁴\n(4 Stellen nach dem Komma)"
-			}
-			],
-			tips: [
-			"10ⁿ: Zahl der Nullen = Exponent",
-			"10⁻ⁿ: Komma um n Stellen nach links",
-			"10⁰ = 1 (keine Null!)",
-			"Wichtig für wissenschaftliche Schreibweise",
-			"1 km = 10³ m, 1 mm = 10⁻³ m"
-			],
-			specialCases: [
-			"10⁰ = 1",
-			"10¹ = 10",
-			"10⁻¹ = 0,1",
-			"Jede Stelle ist das 10-fache der nächsten"
-			]
-		},
-		exercises: [
+		title: "Alle Regeln auf einen Blick",
+		emoji: "📋",
+		color: "gray",
+		simple: "Hier sind ALLE wichtigen Potenzregeln zusammengefasst - dein Spickzettel!",
+
+		allRules: [
 		{
-			question: "Berechne 10⁴",
-			answer: "10000",
-			unit: "",
-			hint: "1 mit 4 Nullen",
-			type: "input"
+			name: "Grundregel",
+			regel: "aⁿ = a · a · a · ... · a (n-mal)",
+			beispiel: "2⁴ = 2·2·2·2 = 16",
+			wann: "Immer - das ist die Definition!"
 		},
 		{
-			question: "Berechne 10⁶",
-			answer: "1000000",
-			unit: "",
-			hint: "1 mit 6 Nullen",
-			type: "input"
+			name: "Spezialfall 1",
+			regel: "a¹ = a",
+			beispiel: "5¹ = 5",
+			wann: "Jede Zahl hoch 1 ist die Zahl selbst"
 		},
 		{
-			question: "Berechne 10⁻¹ als Dezimalzahl",
-			answer: "0.1",
-			unit: "",
-			hint: "Komma 1 Stelle nach links",
-			type: "input"
+			name: "Spezialfall 0",
+			regel: "a⁰ = 1",
+			beispiel: "100⁰ = 1",
+			wann: "Jede Zahl hoch 0 ist 1"
 		},
 		{
-			question: "Berechne 10⁻⁴ als Dezimalzahl",
-			answer: "0.0001",
-			unit: "",
-			hint: "Komma 4 Stellen nach links",
-			type: "input"
+			name: "Multiplikation",
+			regel: "aⁿ · aᵐ = aⁿ⁺ᵐ",
+			beispiel: "2³ · 2⁴ = 2⁷",
+			wann: "Gleiche Basis → Exponenten ADDIEREN"
 		},
 		{
-			question: "Wie viele Nullen hat 10⁵? (nur die Anzahl)",
-			answer: "5",
-			unit: "",
-			hint: "Der Exponent gibt die Anzahl der Nullen an",
-			type: "input"
+			name: "Division",
+			regel: "aⁿ : aᵐ = aⁿ⁻ᵐ",
+			beispiel: "2⁵ : 2² = 2³",
+			wann: "Gleiche Basis → Exponenten SUBTRAHIEREN"
 		},
 		{
-			question: "Schreibe 100.000 als 10 hoch ? (nur Exponent)",
-			answer: "5",
-			unit: "",
-			hint: "Zähle die Nullen",
-			type: "input"
-		}
-		]
-	},
-	{
-		title: "Wissenschaftliche Schreibweise",
-		level: "Klasse 9-10",
-		theory: {
-			heading: "Große und kleine Zahlen darstellen",
-			content: "In der wissenschaftlichen Schreibweise wird eine Zahl als Produkt aus einer Zahl zwischen 1 und 10 und einer Zehnerpotenz geschrieben.",
-			formula: "a · 10ⁿ (wobei 1 ≤ a < 10)",
-			image: `<svg viewBox="0 0 400 200" className="w-full max-w-md mx-auto">
-				<text x="20" y="50" fontSize="28" fill="#1976d2">3.500.000</text>
-				<text x="200" y="50" fontSize="28" fill="#000">=</text>
-				<text x="250" y="50" fontSize="28" fill="#d32f2f">3,5 · 10⁶</text>
-				<text x="20" y="100" fontSize="28" fill="#1976d2">0,00042</text>
-				<text x="200" y="100" fontSize="28" fill="#000">=</text>
-				<text x="250" y="100" fontSize="28" fill="#d32f2f">4,2 · 10⁻⁴</text>
-				<rect x="10" y="20" width="380" height="95" fill="none" stroke="#2e7d32" strokeWidth="2" strokeDasharray="5,5"/>
-			</svg>`,
-			explanation: "Die Zahl vor der Zehnerpotenz muss zwischen 1 (einschließlich) und 10 (ausschließlich) liegen.",
-			examples: [
-			{
-				question: "Schreibe 45.000 in wissenschaftlicher Schreibweise",
-				solution: "45.000 = 4,5 · 10⁴\n(Komma um 4 Stellen nach links)"
-			},
-			{
-				question: "Schreibe 0,0007 in wissenschaftlicher Schreibweise",
-				solution: "0,0007 = 7 · 10⁻⁴\n(Komma um 4 Stellen nach rechts)"
-			},
-			{
-				question: "Schreibe 3,2 · 10⁵ als Dezimalzahl",
-				solution: "3,2 · 10⁵ = 320.000\n(Komma um 5 Stellen nach rechts)"
-			},
-			{
-				question: "Berechne (2 · 10³) · (3 · 10⁴)",
-				solution: "(2 · 10³) · (3 · 10⁴)\n= 2 · 3 · 10³ · 10⁴\n= 6 · 10⁷"
-			}
-			],
-			tips: [
-			"Zahl muss zwischen 1 und 10 liegen (a muss 1 ≤ a < 10 sein)",
-			"Positive Exponenten für große Zahlen (> 10)",
-			"Negative Exponenten für kleine Zahlen (< 1)",
-			"Komma verschieben = Exponent ändern",
-			"Sehr praktisch für sehr große/kleine Zahlen!"
-			],
-			specialCases: [
-			"1 = 1 · 10⁰",
-			"10 = 1 · 10¹",
-			"0,1 = 1 · 10⁻¹"
-			]
-		},
-		exercises: [
-		{
-			question: "Schreibe 2.500 in wissenschaftlicher Schreibweise: 2,5 · 10 hoch ? (nur Exponent)",
-			answer: "3",
-			unit: "",
-			hint: "2.500 = 2,5 · 10³ (Komma um 3 Stellen nach links)",
-			type: "input"
+			name: "Potenz von Potenz",
+			regel: "(aⁿ)ᵐ = aⁿ·ᵐ",
+			beispiel: "(2³)² = 2⁶",
+			wann: "Klammer mit Potenz → Exponenten MULTIPLIZIEREN"
 		},
 		{
-			question: "Schreibe 0,0035 in wissenschaftlicher Schreibweise: 3,5 · 10 hoch ? (nur Exponent, beachte Vorzeichen!)",
-			answer: "-3",
-			unit: "",
-			hint: "0,0035 = 3,5 · 10⁻³ (Komma um 3 Stellen nach rechts)",
-			type: "input"
+			name: "Produkt potenzieren",
+			regel: "(a·b)ⁿ = aⁿ·bⁿ",
+			beispiel: "(2·3)⁴ = 2⁴·3⁴",
+			wann: "MAL in Klammer → auf beide verteilen"
 		},
 		{
-			question: "Berechne 4 · 10³ als Dezimalzahl",
-			answer: "4000",
-			unit: "",
-			hint: "Komma um 3 Stellen nach rechts",
-			type: "input"
+			name: "Quotient potenzieren",
+			regel: "(a/b)ⁿ = aⁿ/bⁿ",
+			beispiel: "(2/3)² = 2²/3²",
+			wann: "Bruch potenzieren → oben UND unten"
 		},
 		{
-			question: "Berechne 5 · 10⁻² als Dezimalzahl",
-			answer: "0.05",
-			unit: "",
-			hint: "Komma um 2 Stellen nach links",
-			type: "input"
+			name: "Negative Exponenten",
+			regel: "a⁻ⁿ = 1/aⁿ",
+			beispiel: "2⁻³ = 1/2³ = 1/8",
+			wann: "Minus → Kehrwert (umdrehen!)"
 		},
 		{
-			question: "Schreibe 750.000 in wissenschaftlicher Schreibweise: 7,5 · 10 hoch ?",
-			answer: "5",
-			unit: "",
-			hint: "Zähle die Stellen vom Komma aus",
-			type: "input"
-		}
-		]
-	},
-	{
-		title: "Wurzeln und Potenzen",
-		level: "Klasse 9-10",
-		theory: {
-			heading: "Wurzeln als Potenzen mit Bruchexponenten",
-			content: "Wurzeln können als Potenzen mit gebrochenen Exponenten geschrieben werden.",
-			formula: "ⁿ√a = a^(1/n)",
-			image: `<svg viewBox="0 0 400 180" className="w-full max-w-md mx-auto">
-				<text x="30" y="60" fontSize="40" fill="#1976d2" fontWeight="bold">√16</text>
-				<text x="130" y="60" fontSize="35" fill="#000">=</text>
-				<text x="180" y="60" fontSize="40" fill="#d32f2f">16^(1/2)</text>
-				<text x="30" y="110" fontSize="40" fill="#1976d2" fontWeight="bold">³√8</text>
-				<text x="130" y="110" fontSize="35" fill="#000">=</text>
-				<text x="180" y="110" fontSize="40" fill="#d32f2f">8^(1/3)</text>
-				<text x="30" y="160" fontSize="28" fill="#2e7d32">√16 = 4, weil 4² = 16</text>
-			</svg>`,
-			explanation: "Die n-te Wurzel entspricht der Potenz mit dem Exponenten 1/n. Quadratwurzel = Exponent 1/2.",
-			examples: [
-			{
-				question: "Berechne √25",
-				solution: "√25 = 25^(1/2) = 5\nweil 5² = 25"
-			},
-			{
-				question: "Berechne ³√27",
-				solution: "³√27 = 27^(1/3) = 3\nweil 3³ = 27"
-			},
-			{
-				question: "Vereinfache 8^(1/3)",
-				solution: "8^(1/3) = ³√8 = 2\nweil 2³ = 8"
-			},
-			{
-				question: "Berechne 16^(1/4)",
-				solution: "16^(1/4) = ⁴√16 = 2\nweil 2⁴ = 16"
-			}
-			],
-			tips: [
-			"√a = a^(1/2) (Quadratwurzel)",
-			"³√a = a^(1/3) (Kubikwurzel)",
-			"ⁿ√a = a^(1/n) (n-te Wurzel)",
-			"Wurzel ziehen = Umkehrung des Potenzierens",
-			"√(a²) = a (bei positiven Zahlen)"
-			],
-			specialCases: [
-			"√1 = 1",
-			"√0 = 0",
-			"ⁿ√1 = 1 (für alle n)",
-			"a^(m/n) = ⁿ√(aᵐ) = (ⁿ√a)ᵐ"
-			]
-		},
-		exercises: [
-		{
-			question: "Berechne √36",
-			answer: "6",
-			unit: "",
-			hint: "Welche Zahl zum Quadrat ergibt 36?",
-			type: "input"
-		},
-		{
-			question: "Berechne ³√64",
-			answer: "4",
-			unit: "",
-			hint: "Welche Zahl hoch 3 ergibt 64?",
-			type: "input"
-		},
-		{
-			question: "Berechne √100",
-			answer: "10",
-			unit: "",
-			hint: "10² = ?",
-			type: "input"
-		},
-		{
-			question: "Berechne ³√125",
-			answer: "5",
-			unit: "",
-			hint: "5³ = ?",
-			type: "input"
-		},
-		{
-			question: "Berechne √49",
-			answer: "7",
-			unit: "",
-			hint: "7² = ?",
-			type: "input"
-		},
-		{
-			question: "Berechne √81",
-			answer: "9",
-			unit: "",
-			hint: "9² = ?",
-			type: "input"
-		}
-		]
-	},
-	{
-		title: "Erweiterte Potenzgesetze",
-		level: "Klasse 10-11",
-		theory: {
-			heading: "Kombinierte Potenzgesetze",
-			content: "Oft müssen mehrere Potenzgesetze kombiniert werden, um komplexe Ausdrücke zu vereinfachen.",
-			formula: "Kombination aller Gesetze",
-			image: `<svg viewBox="0 0 400 250" className="w-full max-w-md mx-auto">
-				<rect x="20" y="20" width="360" height="50" fill="#e3f2fd" stroke="#1976d2" strokeWidth="2"/>
-				<text x="30" y="50" fontSize="20" fill="#1976d2" fontWeight="bold">aⁿ · aᵐ = aⁿ⁺ᵐ</text>
-				<rect x="20" y="80" width="360" height="50" fill="#fff3e0" stroke="#f57c00" strokeWidth="2"/>
-				<text x="30" y="110" fontSize="20" fill="#f57c00" fontWeight="bold">aⁿ : aᵐ = aⁿ⁻ᵐ</text>
-				<rect x="20" y="140" width="360" height="50" fill="#f3e5f5" stroke="#7b1fa2" strokeWidth="2"/>
-				<text x="30" y="170" fontSize="20" fill="#7b1fa2" fontWeight="bold">(aⁿ)ᵐ = aⁿ·ᵐ</text>
-				<rect x="20" y="200" width="360" height="50" fill="#e8f5e9" stroke="#388e3c" strokeWidth="2"/>
-				<text x="30" y="230" fontSize="20" fill="#388e3c" fontWeight="bold">(a·b)ⁿ = aⁿ·bⁿ</text>
-			</svg>`,
-			explanation: "Durch geschickte Kombination der Potenzgesetze können komplexe Terme vereinfacht werden.",
-			examples: [
-			{
-				question: "Vereinfache (2³)² · 2⁴",
-				solution: "(2³)² · 2⁴\n= 2⁶ · 2⁴\n= 2¹⁰\n= 1024"
-			},
-			{
-				question: "Vereinfache (x² · x³)²",
-				solution: "(x² · x³)²\n= (x⁵)²\n= x¹⁰"
-			},
-			{
-				question: "Vereinfache (2a³)² · a⁴",
-				solution: "(2a³)²· a⁴\n= 4a⁶ · a⁴\n= 4a¹⁰"
-			},
-			{
-				question: "Vereinfache (x⁴ : x²)³",
-				solution: "(x⁴ : x²)³\n= (x²)³\n= x⁶"
-			}
-			],
-			tips: [
-			"Schritt für Schritt vorgehen",
-			"Klammern zuerst auflösen",
-			"Potenzgesetze in der richtigen Reihenfolge anwenden",
-			"Am Ende alles zusammenfassen",
-			"Kontrolle: Probe durch Einsetzen von Zahlen"
-			],
-			specialCases: [
-			"(aⁿ · bⁿ) = (a · b)ⁿ (umgekehrt!)",
-			"Bei Division: Exponenten subtrahieren",
-			"Bei Multiplikation: Exponenten addieren"
-			]
-		},
-		exercises: [
-		{
-			question: "Vereinfache (2²)³ · 2¹ (nur Exponenten eingeben)",
-			answer: "7",
-			unit: "",
-			hint: "(2²)³ = 2⁶, dann 2⁶ · 2¹ = 2⁷",
-			type: "input"
-		},
-		{
-			question: "Vereinfache (3³)² : 3⁴ (nur Exponenten eingeben)",
-			answer: "2",
-			unit: "",
-			hint: "(3³)² = 3⁶, dann 3⁶ : 3⁴ = 3²",
-			type: "input"
-		},
-		{
-			question: "Berechne (2² · 2³)²",
-			answer: "1024",
-			unit: "",
-			hint: "2² · 2³ = 2⁵, dann (2⁵)² = 2¹⁰",
-			type: "input"
-		},
-		{
-			question: "Vereinfache (5⁴ : 5²)² (nur Exponenten eingeben)",
-			answer: "4",
-			unit: "",
-			hint: "5⁴ : 5² = 5², dann (5²)² = 5⁴",
-			type: "input"
-		},
-		{
-			question: "Berechne (2 · 3)³",
-			answer: "216",
-			unit: "",
-			hint: "(2 · 3)³ = 2³ · 3³ = 8 · 27",
-			type: "input"
-		}
-		]
-	},
-	{
-		title: "Rationale Exponenten",
-		level: "Klasse 10-11",
-		theory: {
-			heading: "Potenzen mit Brüchen als Exponenten",
-			content: "Exponenten können auch Brüche sein. Diese kombinieren Wurzeln und Potenzen.",
-			formula: "a^(m/n) = ⁿ√(aᵐ) = (ⁿ√a)ᵐ",
-			image: `<svg viewBox="0 0 400 200" className="w-full max-w-md mx-auto">
-				<text x="30" y="60" fontSize="40" fill="#1976d2" fontWeight="bold">8^(2/3)</text>
-				<text x="150" y="60" fontSize="35" fill="#000">=</text>
-				<text x="200" y="60" fontSize="35" fill="#d32f2f">³√(8²)</text>
-				<text x="30" y="110" fontSize="35" fill="#000">=</text>
-				<text x="80" y="110" fontSize="35" fill="#2e7d32">³√64</text>
-				<text x="180" y="110" fontSize="35" fill="#000">=</text>
-				<text x="230" y="110" fontSize="40" fill="#388e3c" fontWeight="bold">4</text>
-				<text x="30" y="160" fontSize="24" fill="#666">Alternative: (³√8)² = 2² = 4</text>
-			</svg>`,
-			explanation: "Der Nenner des Bruchs gibt die Wurzel an, der Zähler die Potenz. Beide Wege führen zum gleichen Ergebnis.",
-			examples: [
-			{
-				question: "Berechne 16^(3/4)",
-				solution: "16^(3/4) = ⁴√(16³)\noder (⁴√16)³\n= (⁴√16)³ = 2³ = 8"
-			},
-			{
-				question: "Berechne 27^(2/3)",
-				solution: "27^(2/3) = ³√(27²)\noder (³√27)²\n= (³√27)² = 3² = 9"
-			},
-			{
-				question: "Vereinfache 4^(3/2)",
-				solution: "4^(3/2) = √(4³)\noder (√4)³\n= (√4)³ = 2³ = 8"
-			},
-			{
-				question: "Berechne 9^(3/2)",
-				solution: "9^(3/2) = (√9)³\n= 3³ = 27"
-			}
-			],
-			tips: [
-			"a^(m/n) = ⁿ√(aᵐ) = (ⁿ√a)ᵐ",
-			"Nenner = Wurzelexponent",
-			"Zähler = Potenzexponent",
-			"Meist einfacher: erst Wurzel, dann Potenz",
-			"Bei großen Zahlen: Zuerst Wurzel ziehen!"
-			],
-			specialCases: [
-			"a^(1/2) = √a (Quadratwurzel)",
-			"a^(1/3) = ³√a (Kubikwurzel)",
-			"a^(2/2) = a^1 = a",
-			"a^(-m/n) = 1 / a^(m/n)"
-			]
-		},
-		exercises: [
-		{
-			question: "Berechne 4^(3/2)",
-			answer: "8",
-			unit: "",
-			hint: "4^(3/2) = (√4)³ = 2³",
-			type: "input"
-		},
-		{
-			question: "Berechne 27^(2/3)",
-			answer: "9",
-			unit: "",
-			hint: "27^(2/3) = (³√27)² = 3²",
-			type: "input"
-		},
-		{
-			question: "Berechne 16^(3/4)",
-			answer: "8",
-			unit: "",
-			hint: "16^(3/4) = (⁴√16)³ = 2³",
-			type: "input"
-		},
-		{
-			question: "Berechne 8^(2/3)",
-			answer: "4",
-			unit: "",
-			hint: "8^(2/3) = (³√8)² = 2²",
-			type: "input"
-		},
-		{
-			question: "Berechne 32^(2/5)",
-			answer: "4",
-			unit: "",
-			hint: "32^(2/5) = (⁵√32)² = 2²",
-			type: "input"
+			name: "Zehnerpotenzen",
+			regel: "10ⁿ = 1 mit n Nullen",
+			beispiel: "10⁴ = 10.000",
+			wann: "Bei Basis 10 → Nullen zählen!"
 		}
 		]
 	}
 	];
 
-	const handleCalcNumber = (num) => {
-		setCalcDisplay(calcDisplay === '0' ? num : calcDisplay + num);
-	};
-
-	const handleCalcOperation = (op) => {
-		setCalcMemory(parseFloat(calcDisplay));
-		setCalcOperation(op);
-		setCalcDisplay('0');
-	};
-
-	const handleCalcEquals = () => {
-		if (calcMemory !== null && calcOperation) {
-			const current = parseFloat(calcDisplay);
-			let result;
-			switch (calcOperation) {
-				case '+': result = calcMemory + current; break;
-				case '-': result = calcMemory - current; break;
-				case '*': result = calcMemory * current; break;
-				case '/': result = calcMemory / current; break;
-				case '^': result = Math.pow(calcMemory, current); break;
-				default: result = current;
-			}
-			setCalcDisplay(result.toString());
-			setCalcMemory(null);
-			setCalcOperation(null);
-		}
-	};
-
-	const handleCalcClear = () => {
-		setCalcDisplay('0');
-		setCalcMemory(null);
-		setCalcOperation(null);
-	};
-
-	const handleCalcSqrt = () => {
-		setCalcDisplay(Math.sqrt(parseFloat(calcDisplay)).toString());
-	};
-
-	const handleCalcCubeRoot = () => {
-		setCalcDisplay(Math.cbrt(parseFloat(calcDisplay)).toString());
-	};
-
-	const handleAnswer = (exerciseIdx, value) => {
-		setAnswers({
-			...answers,
-			[`${currentLesson}-${exerciseIdx}`]: value
-		});
-	};
-
-	const checkAnswer = (exerciseIdx) => {
-		const key = `${currentLesson}-${exerciseIdx}`;
-		const exercise = lessons[currentLesson].exercises[exerciseIdx];
-		const userAnswer = parseFloat(answers[key]);
-		const correctAnswer = parseFloat(exercise.answer);
-
-		const tolerance = Math.max(0.01, Math.abs(correctAnswer) * 0.01);
-		const isCorrect = Math.abs(userAnswer - correctAnswer) <= tolerance;
-
-		setSubmitted({
-			...submitted,
-			[key]: isCorrect
-		});
-	};
-
-	const toggleHint = (exerciseIdx) => {
-		const key = `${currentLesson}-${exerciseIdx}`;
-		setShowHint({
-			...showHint,
-			[key]: !showHint[key]
-		});
-	};
-
 	const lesson = lessons[currentLesson];
+	const colors = {
+		blue: "from-blue-400 to-blue-600",
+		green: "from-green-400 to-green-600",
+		purple: "from-purple-400 to-purple-600",
+		orange: "from-orange-400 to-orange-600",
+		red: "from-red-400 to-red-600",
+		pink: "from-pink-400 to-pink-600",
+		indigo: "from-indigo-400 to-indigo-600",
+		teal: "from-teal-400 to-teal-600",
+		yellow: "from-yellow-400 to-yellow-600",
+		gray: "from-gray-400 to-gray-600"
+	};
+
+	const borderColors = {
+		blue: "border-blue-500",
+		green: "border-green-500",
+		purple: "border-purple-500",
+		orange: "border-orange-500",
+		red: "border-red-500",
+		pink: "border-pink-500",
+		indigo: "border-indigo-500",
+		teal: "border-teal-500",
+		yellow: "border-yellow-500",
+		gray: "border-gray-500"
+	};
+
+	const bgColors = {
+		blue: "bg-blue-50",
+		green: "bg-green-50",
+		purple: "bg-purple-50",
+		orange: "bg-orange-50",
+		red: "bg-red-50",
+		pink: "bg-pink-50",
+		indigo: "bg-indigo-50",
+		teal: "bg-teal-50",
+		yellow: "bg-yellow-50",
+		gray: "bg-gray-50"
+	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4">
-		<div className="max-w-6xl mx-auto">
-		<div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-		<div className="flex items-center justify-between">
-		<div>
-		<div className="flex items-center gap-3 mb-2">
-		<span className="text-3xl">📐</span>
-		<h1 className="text-3xl font-bold text-gray-800">Potenzen - Komplettes Lernbuch</h1>
+		<div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 p-4">
+		<div className="max-w-5xl mx-auto">
+		
+		{/* Header */}
+		<div className="bg-white rounded-2xl shadow-2xl p-8 mb-6 border-4 border-purple-300">
+		<div className="text-center">
+		<h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-3">
+		🎓 Potenzen - SUPER EINFACH erklärt! 🎓
+		</h1>
+		<p className="text-xl text-gray-700 font-medium">
+		Die beste und einfachste Erklärung, die du je bekommen wirst!
+		</p>
+		<div className="mt-4 text-6xl animate-bounce">
+		{lesson.emoji}
 		</div>
-		<p className="text-gray-600">Von Grundlagen bis Oberstufe • Alle Potenzgesetze & Regeln</p>
-		</div>
-		<button
-		onClick={() => setShowCalculator(!showCalculator)}
-		className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors shadow-md flex items-center gap-2"
-		>
-		<span className="text-xl">🧮</span>
-		Taschenrechner
-		</button>
 		</div>
 		</div>
 
-		<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-		<div className="lg:col-span-2">
-		<div className="bg-white rounded-lg shadow-lg p-4 mb-6">
-		<div className="mb-4">
-		<div className="text-sm text-gray-600 mb-2">Wähle ein Thema:</div>
-		<div className="grid grid-cols-2 gap-2">
+		{/* Lesson Navigation */}
+		<div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
+		<h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
+		📚 Wähle ein Thema:
+		</h3>
+		<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
 		{lessons.map((l, idx) => (
 			<button
 			key={idx}
-			onClick={() => {
-				setCurrentLesson(idx);
-				setMode('theory');
-			}}
-			className={`py-2 px-3 rounded font-medium transition-all text-left ${
+			onClick={() => setCurrentLesson(idx)}
+			className={`p-4 rounded-xl font-bold text-left transition-all transform hover:scale-105 ${
 				idx === currentLesson
-				? 'bg-indigo-600 text-white shadow-md'
-				: 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+				? `bg-gradient-to-r ${colors[l.color]} text-white shadow-lg scale-105`
+				: 'bg-gray-100 text-gray-700 hover:bg-gray-200'
 				}`}
 			>
-			<div className="font-bold">{idx + 1}. {l.title}</div>
-			<div className="text-xs opacity-75">{l.level}</div>
+			<div className="text-3xl mb-2">{l.emoji}</div>
+			<div className="text-sm leading-tight">{l.title}</div>
 			</button>
 			))}
 		</div>
 		</div>
 
-		<div className="flex gap-2">
-		<button
-		onClick={() => setMode('theory')}
-		className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-			mode === 'theory'
-			? 'bg-green-600 text-white shadow-md'
-			: 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-			}`}
-		>
-		<span className="text-xl">📖</span>
-		Theorie lernen
-		</button>
-		<button
-		onClick={() => setMode('practice')}
-		className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-			mode === 'practice'
-			? 'bg-orange-600 text-white shadow-md'
-			: 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-			}`}
-		>
-		<span className="text-xl">✏️</span>
-		Aufgaben üben
-		</button>
+		{/* Main Content */}
+		<div className="bg-white rounded-2xl shadow-2xl p-8 border-4" style={{borderColor: borderColors[lesson.color].split('-')[1]}}>
+		
+		{/* Title */}
+		<div className={`${bgColors[lesson.color]} rounded-xl p-6 mb-6 border-l-8 ${borderColors[lesson.color]}`}>
+		<h2 className="text-3xl font-black text-gray-800 mb-3 flex items-center gap-3">
+		<span className="text-5xl">{lesson.emoji}</span>
+		{lesson.title}
+		</h2>
+		<div className="text-xl font-bold text-gray-700 bg-white p-4 rounded-lg border-2 border-dashed border-gray-400">
+		💡 {lesson.simple}
 		</div>
 		</div>
 
-		{mode === 'theory' && (
-			<div className="bg-white rounded-lg shadow-lg p-6">
-			<div className="flex items-center gap-2 mb-2">
-			<span className="text-2xl">🎓</span>
-			<h2 className="text-2xl font-bold text-gray-800">{lesson.theory.heading}</h2>
-			</div>
-			<div className="text-sm text-indigo-600 font-medium mb-4">{lesson.level}</div>
-
-			<p className="text-lg text-gray-700 mb-4">{lesson.theory.content}</p>
-
-			<div className="bg-indigo-50 border-l-4 border-indigo-600 p-4 mb-4">
-			<p className="text-2xl font-mono font-bold text-indigo-900">{lesson.theory.formula}</p>
-			</div>
-
-			<div className="mb-6 bg-gray-50 p-4 rounded-lg">
-			<p className="text-gray-700 italic">{lesson.theory.explanation}</p>
-			</div>
-
-			<div dangerouslySetInnerHTML={{ __html: lesson.theory.image }} className="mb-6" />
-
-			<div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-6">
-			<h3 className="font-bold text-gray-800 mb-2">💡 Wichtige Tipps:</h3>
-			<ul className="space-y-1">
-			{lesson.theory.tips.map((tip, idx) => (
-				<li key={idx} className="text-gray-700">• {tip}</li>
-				))}
-			</ul>
-			</div>
-
-			{lesson.theory.specialCases && (
-				<div className="bg-purple-50 border-l-4 border-purple-500 p-4 mb-6">
-				<h3 className="font-bold text-gray-800 mb-2">⚡ Spezialfälle:</h3>
-				<ul className="space-y-1">
-				{lesson.theory.specialCases.map((special, idx) => (
-					<li key={idx} className="text-gray-700">• {special}</li>
-					))}
-				</ul>
+		{/* Visual Examples (Lesson 0) */}
+		{lesson.visualExamples && (
+			<div className="mb-8">
+			<h3 className="text-2xl font-bold text-gray-800 mb-4">👀 Schau dir das an:</h3>
+			<div className="space-y-4">
+			{lesson.visualExamples.map((ex, idx) => (
+				<div key={idx} className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-300">
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center text-center">
+				<div>
+				<div className="text-sm text-gray-600 mb-1">Lang geschrieben:</div>
+				<div className="text-2xl font-bold text-gray-800">{ex.normal}</div>
 				</div>
-				)}
-
-			<h3 className="text-xl font-bold text-gray-800 mb-3">📚 Beispielaufgaben mit Lösungsweg:</h3>
-			{lesson.theory.examples.map((example, idx) => (
-				<div key={idx} className="bg-green-50 rounded-lg p-4 mb-3 border-2 border-green-200">
-				<p className="font-semibold text-gray-800 mb-2">Beispiel {idx + 1}: {example.question}</p>
-				<div className="bg-white p-3 rounded">
-				<p className="font-semibold text-green-700 mb-1">Lösung:</p>
-				<pre className="text-sm text-gray-700 font-mono whitespace-pre-wrap">
-				{example.solution}
-				</pre>
+				<div>
+				<div className="text-4xl text-green-600 font-black">↓</div>
+				<div className="text-sm text-gray-600">wird zu:</div>
+				</div>
+				<div>
+				<div className="text-sm text-gray-600 mb-1">Kurz als Potenz:</div>
+				<div className="text-4xl font-black text-purple-600">{ex.short}</div>
+				<div className="text-lg text-green-600 font-bold mt-2">= {ex.result}</div>
+				</div>
+				</div>
+				<div className="mt-4 text-center text-gray-700 bg-white p-3 rounded-lg">
+				💬 <strong>{ex.explain}</strong>
 				</div>
 				</div>
 				))}
+			</div>
+			</div>
+			)}
 
-			<div className="mt-6 p-4 bg-indigo-50 border-2 border-indigo-300 rounded-lg">
-			<p className="text-center text-indigo-800 font-semibold">
-			✅ Verstanden? Dann klicke auf "Aufgaben üben" und teste dein Wissen!
+		{/* Easy Rule */}
+		{lesson.easyRule && (
+			<div className="mb-8 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-xl p-6 border-4 border-yellow-400">
+			<h3 className="text-2xl font-black text-orange-800 mb-3">
+			⭐ {lesson.easyRule.title}
+			</h3>
+			<div className="bg-white rounded-lg p-5 mb-3">
+			<p className="text-2xl font-bold text-gray-800">{lesson.easyRule.rule}</p>
+			</div>
+			<div className="bg-orange-200 rounded-lg p-4">
+			<p className="text-lg font-bold text-gray-800">
+			<span className="text-orange-600">📌 Beispiel:</span> {lesson.easyRule.example}
 			</p>
 			</div>
 			</div>
 			)}
 
-		{mode === 'practice' && (
-			<div className="bg-white rounded-lg shadow-lg p-6">
-			<div className="bg-orange-100 border-l-4 border-orange-600 p-4 mb-6">
-			<h2 className="text-2xl font-bold text-gray-800 mb-2">📝 Übungen: {lesson.title}</h2>
-			<p className="text-gray-700">{lesson.level}</p>
-			<p className="text-sm text-gray-600 mt-1">Löse die Aufgaben und überprüfe dein Wissen!</p>
+		{/* Merkhilfe */}
+		{lesson.merkhilfe && (
+			<div className="mb-8 bg-green-50 rounded-xl p-6 border-4 border-green-400">
+			<h3 className="text-2xl font-black text-green-800 mb-4">
+			🧠 Das musst du dir merken:
+			</h3>
+			<div className="space-y-3">
+			{lesson.merkhilfe.map((punkt, idx) => (
+				<div key={idx} className="bg-white rounded-lg p-4 text-lg font-medium text-gray-800 shadow">
+				{punkt}
+				</div>
+				))}
 			</div>
+			</div>
+			)}
 
-			{lesson.exercises.map((exercise, idx) => {
-				const key = `${currentLesson}-${idx}`;
-				const isCorrect = submitted[key];
-				return (
-					<div key={idx} className="bg-blue-50 rounded-lg p-5 mb-4 border-2 border-blue-200">
-					<p className="font-semibold text-gray-800 mb-3">
-					Aufgabe {idx + 1}: {exercise.question}
-					</p>
+		{/* Special Cases (Lesson 1) */}
+		{lesson.specialCases && (
+			<div className="mb-8 space-y-4">
+			<h3 className="text-2xl font-black text-gray-800 mb-4">🌟 Die Spezialfälle:</h3>
+			{lesson.specialCases.map((special, idx) => (
+				<div key={idx} className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border-2 border-purple-300">
+				<div className="text-xl font-black text-purple-800 mb-3">
+				{special.rule}
+				</div>
+				<div className="grid grid-cols-3 gap-2 mb-3">
+				{special.examples.map((ex, i) => (
+					<div key={i} className="bg-white rounded-lg p-3 text-center font-bold text-lg text-gray-800 shadow">
+					{ex}
+					</div>
+					))}
+				</div>
+				<div className="bg-yellow-100 rounded-lg p-3 mt-3">
+				<p className="font-medium text-gray-800">
+				<span className="font-black">Warum?</span> {special.why}
+				</p>
+				</div>
+				<div className="bg-green-100 rounded-lg p-3 mt-2 text-center">
+				<p className="font-mono text-xl font-bold text-green-800">{special.visual}</p>
+				</div>
+				</div>
+				))}
+			</div>
+			)}
 
-					<div className="flex gap-2 mb-4">
-					<input
-					type="number"
-					step="any"
-					value={answers[key] || ''}
-					onChange={(e) => handleAnswer(idx, e.target.value)}
-					className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-					placeholder="Deine Antwort..."
-					disabled={submitted[key] !== undefined}
-					/>
-					{exercise.unit && (
-						<span className="flex items-center text-gray-700 font-medium px-2">
-						{exercise.unit}
-						</span>
+		{/* Pattern (Lesson 2 - 10er Potenzen) */}
+		{lesson.pattern && (
+			<div className="mb-8 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border-4 border-indigo-400">
+			<h3 className="text-2xl font-black text-indigo-800 mb-4">
+			🎯 {lesson.pattern.title}
+			</h3>
+			<div className="space-y-2">
+			{lesson.pattern.examples.map((ex, idx) => (
+				<div key={idx} className="bg-white rounded-lg p-4 flex items-center justify-between shadow">
+				<div className="text-2xl font-bold text-indigo-600">{ex.potenz}</div>
+				<div className="text-2xl font-black text-gray-400">=</div>
+				<div className="text-2xl font-bold text-green-600">{ex.equals}</div>
+				<div className="text-sm font-medium text-gray-600 bg-yellow-100 px-3 py-1 rounded-full">
+				{ex.nullen}
+				</div>
+				</div>
+				))}
+			</div>
+			</div>
+			)}
+
+		{/* Visual Steps (Lessons 3-8) */}
+		{lesson.visualSteps && (
+			<div className="mb-8">
+			<h3 className="text-2xl font-black text-gray-800 mb-4">
+			📝 Schritt für Schritt:
+			</h3>
+			<div className="space-y-6">
+			{lesson.visualSteps.map((step, idx) => (
+				<div key={idx} className={`${bgColors[lesson.color]} rounded-xl p-6 border-4 ${borderColors[lesson.color]}`}>
+				<div className="text-center space-y-4">
+				<div>
+				<div className="text-sm text-gray-600 mb-1">Aufgabe:</div>
+				<div className="text-4xl font-black text-gray-800">{step.aufgabe}</div>
+				</div>
+				
+				<div className="text-3xl font-black text-purple-600">↓</div>
+				
+				<div>
+				<div className="text-sm text-gray-600 mb-1">Das bedeutet:</div>
+				<div className="text-2xl font-bold text-blue-700">{step.bedeutet}</div>
+				</div>
+				
+				{step.zusammen && (
+					<>
+					<div className="text-3xl font-black text-purple-600">↓</div>
+					<div>
+					<div className="text-sm text-gray-600 mb-1">Zusammen:</div>
+					<div className="text-2xl font-bold text-green-700">{step.zusammen}</div>
+					</div>
+					</>
 					)}
+				
+				{step.kürzen && (
+					<>
+					<div className="text-3xl font-black text-purple-600">↓</div>
+					<div className="bg-yellow-100 rounded-lg p-3">
+					<div className="text-lg font-bold text-gray-800">{step.kürzen}</div>
 					</div>
-
-					<div className="flex gap-2">
-					<button
-					onClick={() => checkAnswer(idx)}
-					disabled={submitted[key] !== undefined}
-					className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
-						submitted[key] === undefined
-						? 'bg-blue-600 text-white hover:bg-blue-700'
-						: submitted[key] === true
-						? 'bg-green-600 text-white'
-						: 'bg-red-600 text-white'
-						}`}
-					>
-					{submitted[key] === undefined ? (
-						'Prüfen'
-						) : submitted[key] === true ? (
-							'✅ Richtig!'
-							) : (
-								'❌ Falsch'
-							)}
-					</button>
-
-					<button
-					onClick={() => toggleHint(idx)}
-					className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
-					>
-					💡 Tipp
-					</button>
+					</>
+					)}
+				
+				{step.übrig && (
+					<>
+					<div className="text-3xl font-black text-purple-600">↓</div>
+					<div>
+					<div className="text-sm text-gray-600 mb-1">Übrig bleibt:</div>
+					<div className="text-2xl font-bold text-orange-700">{step.übrig}</div>
 					</div>
+					</>
+					)}
 
-					{showHint[key] && (
-						<div className="mt-3 bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded">
-						<p className="text-sm text-gray-700">💡 {exercise.hint}</p>
-						</div>
-						)}
-
-					{submitted[key] === false && (
-						<div className="mt-3 bg-red-50 border-l-4 border-red-500 p-3 rounded">
-						<p className="text-sm text-gray-700">
-						❌ Die richtige Antwort ist: <strong>{exercise.answer} {exercise.unit}</strong>
-						</p>
-						</div>
-						)}
-
-					{submitted[key] === true && (
-						<div className="mt-3 bg-green-50 border-l-4 border-green-500 p-3 rounded">
-						<p className="text-sm text-green-700">
-						✅ Super! Du hast die Aufgabe richtig gelöst!
-						</p>
-						</div>
-						)}
+				{step.verteilen && (
+					<>
+					<div className="text-3xl font-black text-purple-600">↓</div>
+					<div>
+					<div className="text-sm text-gray-600 mb-1">Verteilen:</div>
+					<div className="text-2xl font-bold text-orange-700">{step.verteilen}</div>
 					</div>
-				);
-			})}
+					</>
+					)}
+
+				{step.ausrechnen && (
+					<>
+					<div className="text-3xl font-black text-purple-600">↓</div>
+					<div>
+					<div className="text-sm text-gray-600 mb-1">Ausrechnen:</div>
+					<div className="text-2xl font-bold text-teal-700">{step.ausrechnen}</div>
+					</div>
+					</>
+					)}
+
+				{step.umwandeln && (
+					<>
+					<div className="text-3xl font-black text-purple-600">↓</div>
+					<div>
+					<div className="text-sm text-gray-600 mb-1">Umwandeln:</div>
+					<div className="text-2xl font-bold text-orange-700">{step.umwandeln}</div>
+					</div>
+					</>
+					)}
+				
+				<div className="text-3xl font-black text-green-600">✓</div>
+				
+				<div className="bg-gradient-to-r from-green-400 to-green-600 text-white rounded-lg p-4">
+				{step.lösung && (
+					<div className="text-sm mb-1">Lösung als Potenz:</div>
+				)}
+				<div className="text-3xl font-black">{step.lösung || step.ergebnis}</div>
+				{step.rechnung && (
+					<div className="text-lg mt-2 bg-white bg-opacity-30 rounded px-3 py-1 inline-block">
+					Rechnung: {step.rechnung}
+					</div>
+					)}
+				{step.lösung && step.ergebnis && (
+					<div className="text-xl mt-2">= {step.ergebnis}</div>
+					)}
+				</div>
+				</div>
+				</div>
+				))}
+			</div>
 			</div>
 			)}
-		</div>
 
-		<div className="space-y-6">
-		<div className="bg-white rounded-lg shadow-lg p-6">
-		<h3 className="text-xl font-bold text-gray-800 mb-4">📊 Dein Fortschritt</h3>
-		<div className="space-y-3">
-		{lessons.map((l, idx) => {
-			const completed = l.exercises.filter((_, exerciseIdx) =>
-				submitted[`${idx}-${exerciseIdx}`] === true
-			).length;
-			const total = l.exercises.length;
-			const percentage = total > 0 ? (completed / total) * 100 : 0;
-
-			return (
-				<div key={idx} className="bg-gray-50 rounded-lg p-3">
-				<div className="flex justify-between mb-1">
-				<span className="text-sm font-medium text-gray-700">{l.title}</span>
-				<span className="text-sm text-gray-600">{completed}/{total}</span>
-				</div>
-				<div className="w-full bg-gray-200 rounded-full h-2">
-				<div
-				className="bg-green-600 h-2 rounded-full transition-all duration-300"
-				style={{ width: `${percentage}%` }}
-				/>
-				</div>
-				</div>
-			);
-		})}
-		</div>
-		</div>
-
-		<div className="bg-white rounded-lg shadow-lg p-6">
-		<h3 className="text-xl font-bold text-gray-800 mb-4">📋 Alle Potenzgesetze</h3>
-		<div className="space-y-2 text-sm">
-		<div className="bg-blue-50 p-3 rounded border-l-4 border-blue-600">
-		<p className="font-bold text-blue-900 mb-1">Multiplikation:</p>
-		<p className="font-mono">aⁿ · aᵐ = aⁿ⁺ᵐ</p>
-		</div>
-		<div className="bg-green-50 p-3 rounded border-l-4 border-green-600">
-		<p className="font-bold text-green-900 mb-1">Division:</p>
-		<p className="font-mono">aⁿ : aᵐ = aⁿ⁻ᵐ</p>
-		</div>
-		<div className="bg-purple-50 p-3 rounded border-l-4 border-purple-600">
-		<p className="font-bold text-purple-900 mb-1">Potenz einer Potenz:</p>
-		<p className="font-mono">(aⁿ)ᵐ = aⁿ·ᵐ</p>
-		</div>
-		<div className="bg-orange-50 p-3 rounded border-l-4 border-orange-600">
-		<p className="font-bold text-orange-900 mb-1">Produkt potenzieren:</p>
-		<p className="font-mono">(a · b)ⁿ = aⁿ · bⁿ</p>
-		</div>
-		<div className="bg-pink-50 p-3 rounded border-l-4 border-pink-600">
-		<p className="font-bold text-pink-900 mb-1">Quotient potenzieren:</p>
-		<p className="font-mono">(a/b)ⁿ = aⁿ/bⁿ</p>
-		</div>
-		<div className="bg-indigo-50 p-3 rounded border-l-4 border-indigo-600">
-		<p className="font-bold text-indigo-900 mb-1">Negative Exponenten:</p>
-		<p className="font-mono">a⁻ⁿ = 1/aⁿ</p>
-		</div>
-		<div className="bg-yellow-50 p-3 rounded border-l-4 border-yellow-600">
-		<p className="font-bold text-yellow-900 mb-1">Wurzeln:</p>
-		<p className="font-mono">ⁿ√a = a^(1/n)</p>
-		</div>
-		</div>
-		</div>
-
-		<div className="bg-white rounded-lg shadow-lg p-6">
-		<h3 className="text-xl font-bold text-gray-800 mb-4">🎯 Lernstrategie</h3>
-		<div className="space-y-2 text-sm text-gray-700">
-		<p>1️⃣ Theorie gründlich lesen</p>
-		<p>2️⃣ Beispiele nachvollziehen</p>
-		<p>3️⃣ Formeln auswendig lernen</p>
-		<p>4️⃣ Übungsaufgaben lösen</p>
-		<p>5️⃣ Bei Fehlern: Theorie wiederholen</p>
-		<p>6️⃣ Schrittweise von einfach zu schwer</p>
-		</div>
-		</div>
-		</div>
-		</div>
-
-		{showCalculator && (
-			<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-			<div className="bg-white rounded-lg shadow-2xl p-6 max-w-md w-full">
-			<div className="flex justify-between items-center mb-4">
-			<h3 className="text-xl font-bold text-gray-800">🧮 Wissenschaftlicher Rechner</h3>
-			<button
-			onClick={() => setShowCalculator(false)}
-			className="text-gray-500 hover:text-gray-700 text-2xl"
-			>
-			✕
-			</button>
+		{/* Fehler / Unterschied */}
+		{lesson.fehler && (
+			<div className="mb-8 bg-red-50 rounded-xl p-6 border-4 border-red-400">
+			<h3 className="text-2xl font-black text-red-800 mb-4">
+			⚠️ HÄUFIGER FEHLER:
+			</h3>
+			<div className="space-y-3">
+			<div className="bg-white rounded-lg p-4 border-2 border-red-300">
+			<div className="text-xl font-bold text-red-600 mb-2">❌ FALSCH:</div>
+			<div className="text-2xl font-mono">{lesson.fehler.falsch}</div>
 			</div>
-
-			<div className="bg-gray-100 p-4 rounded-lg mb-4">
-			<div className="text-right text-3xl font-mono text-gray-800 overflow-x-auto">
-			{calcDisplay}
+			<div className="bg-white rounded-lg p-4 border-2 border-green-500">
+			<div className="text-xl font-bold text-green-600 mb-2">✅ RICHTIG:</div>
+			<div className="text-2xl font-mono">{lesson.fehler.richtig}</div>
 			</div>
-			</div>
-
-			<div className="grid grid-cols-4 gap-2">
-			<button onClick={handleCalcClear} className="bg-red-500 text-white p-4 rounded-lg font-bold hover:bg-red-600">C</button>
-			<button onClick={() => handleCalcOperation('^')} className="bg-blue-500 text-white p-4 rounded-lg font-bold hover:bg-blue-600">xʸ</button>
-			<button onClick={handleCalcSqrt} className="bg-blue-500 text-white p-4 rounded-lg font-bold hover:bg-blue-600">√</button>
-			<button onClick={() => handleCalcOperation('/')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">÷</button>
-
-			<button onClick={() => handleCalcNumber('7')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">7</button>
-			<button onClick={() => handleCalcNumber('8')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">8</button>
-			<button onClick={() => handleCalcNumber('9')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">9</button>
-			<button onClick={() => handleCalcOperation('*')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">×</button>
-
-			<button onClick={() => handleCalcNumber('4')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">4</button>
-			<button onClick={() => handleCalcNumber('5')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">5</button>
-			<button onClick={() => handleCalcNumber('6')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">6</button>
-			<button onClick={() => handleCalcOperation('-')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">−</button>
-
-			<button onClick={() => handleCalcNumber('1')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">1</button>
-			<button onClick={() => handleCalcNumber('2')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">2</button>
-			<button onClick={() => handleCalcNumber('3')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">3</button>
-			<button onClick={() => handleCalcOperation('+')} className="bg-orange-500 text-white p-4 rounded-lg font-bold hover:bg-orange-600">+</button>
-
-			<button onClick={() => handleCalcNumber('0')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300 col-span-2">0</button>
-			<button onClick={() => handleCalcNumber('.')} className="bg-gray-200 p-4 rounded-lg font-bold hover:bg-gray-300">.</button>
-			<button onClick={handleCalcEquals} className="bg-green-600 text-white p-4 rounded-lg font-bold hover:bg-green-700">=</button>
-
-			<button onClick={handleCalcCubeRoot} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">³√</button>
-			<button onClick={() => handleCalcNumber('-')} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">+/-</button>
-			<button onClick={() => setCalcDisplay((1/parseFloat(calcDisplay)).toString())} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">1/x</button>
-			<button onClick={() => setCalcDisplay(Math.pow(parseFloat(calcDisplay), 2).toString())} className="bg-purple-500 text-white p-3 rounded-lg font-bold hover:bg-purple-600 text-sm">x²</button>
-
-			<div className="col-span-4 text-xs text-center text-gray-600 mt-2">
-			💡 Für Potenzen: Zahl eingeben → "xʸ" → Exponent → "="
+			<div className="bg-yellow-100 rounded-lg p-4">
+			<div className="text-lg font-bold text-gray-800">
+			<span className="text-orange-600">💡 Warum?</span> {lesson.fehler.warum}
 			</div>
 			</div>
 			</div>
 			</div>
 			)}
+
+		{lesson.unterschied && (
+			<div className="mb-8 bg-orange-50 rounded-xl p-6 border-4 border-orange-400">
+			<h3 className="text-2xl font-black text-orange-800 mb-4">
+			⚡ {lesson.unterschied.title}
+			</h3>
+			<div className="space-y-3">
+			<div className="bg-white rounded-lg p-4">
+			<div className="text-2xl font-mono text-blue-700">{lesson.unterschied.beispiel1}</div>
+			</div>
+			<div className="bg-white rounded-lg p-4">
+			<div className="text-2xl font-mono text-purple-700">{lesson.unterschied.beispiel2}</div>
+			</div>
+			<div className="bg-yellow-100 rounded-lg p-4">
+			<div className="text-lg font-bold text-gray-800">
+			<span className="text-orange-600">📌 Merke:</span> {lesson.unterschied.merke}
+			</div>
+			</div>
+			</div>
+			</div>
+			)}
+
+		{lesson.specialCase && (
+			<div className="mb-8 bg-purple-50 rounded-xl p-6 border-4 border-purple-400">
+			<h3 className="text-2xl font-black text-purple-800 mb-4">
+			🎯 {lesson.specialCase.title}
+			</h3>
+			<div className="bg-white rounded-lg p-5 mb-3">
+			<div className="text-2xl font-mono font-bold text-gray-800 text-center">
+			{lesson.specialCase.beispiel}
+			</div>
+			</div>
+			<div className="bg-yellow-100 rounded-lg p-4">
+			<div className="text-lg font-bold text-gray-800">
+			<span className="text-purple-600">💡 Warum?</span> {lesson.specialCase.warum}
+			</div>
+			</div>
+			</div>
+			)}
+
+		{/* Alltagsbeispiele */}
+		{lesson.alltagsbeispiele && (
+			<div className="mb-8">
+			<h3 className="text-2xl font-black text-gray-800 mb-4">
+			🌍 Beispiele aus dem echten Leben:
+			</h3>
+			<div className="space-y-4">
+			{lesson.alltagsbeispiele.map((beispiel, idx) => (
+				<div key={idx} className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl p-5 border-2 border-cyan-300">
+				<div className="font-bold text-lg text-gray-800 mb-2">
+				📍 {beispiel.situation}
+				</div>
+				<div className="bg-white rounded-lg p-3 mb-2">
+				<div className="text-gray-700">{beispiel.start}</div>
+				</div>
+				<div className="bg-green-100 rounded-lg p-3">
+				<div className="font-bold text-green-800">
+				✨ {beispiel.potenz}
+				</div>
+				</div>
+				</div>
+				))}
+			</div>
+			</div>
+			)}
+
+		{/* Real Beispiele */}
+		{lesson.realBeispiele && (
+			<div className="mb-8 bg-blue-50 rounded-xl p-6 border-4 border-blue-400">
+			<h3 className="text-2xl font-black text-blue-800 mb-4">
+			🌟 Das kennst du aus dem Alltag:
+			</h3>
+			<div className="space-y-2">
+			{lesson.realBeispiele.map((beispiel, idx) => (
+				<div key={idx} className="bg-white rounded-lg p-4 text-lg font-medium text-gray-800 shadow">
+				{beispiel}
+				</div>
+				))}
+			</div>
+			</div>
+			)}
+
+		{/* Variablen */}
+		{lesson.variablen && (
+			<div className="mb-8 bg-pink-50 rounded-xl p-6 border-4 border-pink-400">
+			<h3 className="text-2xl font-black text-pink-800 mb-4">
+			🔤 {lesson.variablen.title}
+			</h3>
+			<div className="bg-white rounded-lg p-5 mb-3">
+			<div className="text-2xl font-mono font-bold text-gray-800 text-center">
+			{lesson.variablen.beispiel}
+			</div>
+			</div>
+			<div className="bg-yellow-100 rounded-lg p-4">
+			<div className="text-lg font-bold text-gray-800">
+			<span className="text-pink-600">⚡ Wichtig:</span> {lesson.variablen.wichtig}
+			</div>
+			</div>
+			</div>
+			)}
+
+		{/* Trick */}
+		{lesson.trick && (
+			<div className="mb-8 bg-indigo-50 rounded-xl p-6 border-4 border-indigo-400">
+			<h3 className="text-2xl font-black text-indigo-800 mb-4">
+			💎 {lesson.trick.title}
+			</h3>
+			<div className="bg-white rounded-lg p-5 mb-3">
+			<div className="text-xl font-mono font-bold text-gray-800">
+			{lesson.trick.beispiel}
+			</div>
+			</div>
+			<div className="bg-yellow-100 rounded-lg p-4">
+			<div className="text-lg font-bold text-gray-800">
+			<span className="text-indigo-600">✨</span> {lesson.trick.regel}
+			</div>
+			</div>
+			</div>
+			)}
+
+		{lesson.trick10er && (
+			<div className="mb-8 bg-teal-50 rounded-xl p-6 border-4 border-teal-400">
+			<h3 className="text-2xl font-black text-teal-800 mb-4">
+			⚡ {lesson.trick10er.title}
+			</h3>
+			<div className="space-y-2 mb-4">
+			{lesson.trick10er.beispiele.map((bsp, idx) => (
+				<div key={idx} className="bg-white rounded-lg p-4 text-xl font-mono font-bold text-gray-800">
+				{bsp}
+				</div>
+				))}
+			</div>
+			<div className="bg-yellow-100 rounded-lg p-4">
+			<div className="text-lg font-bold text-gray-800">
+			<span className="text-teal-600">📌</span> {lesson.trick10er.regel}
+			</div>
+			</div>
+			</div>
+			)}
+
+		{/* All Rules Overview (Lesson 9) */}
+		{lesson.allRules && (
+			<div className="space-y-4">
+			{lesson.allRules.map((rule, idx) => (
+				<div key={idx} className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border-4 border-indigo-300 shadow-lg">
+				<div className="flex items-start gap-4">
+				<div className="text-4xl font-black text-indigo-600 bg-white rounded-full w-16 h-16 flex items-center justify-center shadow">
+				{idx + 1}
+				</div>
+				<div className="flex-1">
+				<h4 className="text-2xl font-black text-gray-800 mb-2">{rule.name}</h4>
+				<div className="bg-white rounded-lg p-4 mb-3 border-2 border-indigo-200">
+				<div className="text-xl font-mono font-bold text-indigo-700">{rule.regel}</div>
+				</div>
+				<div className="bg-green-100 rounded-lg p-3 mb-2">
+				<div className="text-sm text-gray-600 mb-1">Beispiel:</div>
+				<div className="text-lg font-bold text-green-800">{rule.beispiel}</div>
+				</div>
+				<div className="bg-yellow-100 rounded-lg p-3">
+				<div className="text-sm font-medium text-gray-800">
+				<span className="font-black">Wann?</span> {rule.wann}
+				</div>
+				</div>
+				</div>
+				</div>
+				</div>
+				))}
+			</div>
+			)}
+
+		</div>
+
+		{/* Navigation */}
+		<div className="mt-8 flex justify-between items-center">
+		<button
+		onClick={() => setCurrentLesson(Math.max(0, currentLesson - 1))}
+		disabled={currentLesson === 0}
+		className={`px-6 py-3 rounded-xl font-bold text-lg transition-all ${
+			currentLesson === 0
+			? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+			: 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:shadow-lg hover:scale-105'
+			}`}
+		>
+		← Vorheriges Thema
+		</button>
+
+		<div className="text-center">
+		<div className="text-sm text-gray-600">Thema {currentLesson + 1} von {lessons.length}</div>
+		<div className="w-48 bg-gray-200 rounded-full h-3 mt-1">
+		<div
+		className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all"
+		style={{ width: `${((currentLesson + 1) / lessons.length) * 100}%` }}
+		/>
+		</div>
+		</div>
+
+		<button
+		onClick={() => setCurrentLesson(Math.min(lessons.length - 1, currentLesson + 1))}
+		disabled={currentLesson === lessons.length - 1}
+		className={`px-6 py-3 rounded-xl font-bold text-lg transition-all ${
+			currentLesson === lessons.length - 1
+			? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+			: 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:shadow-lg hover:scale-105'
+			}`}
+		>
+		Nächstes Thema →
+		</button>
+		</div>
+
 		</div>
 		</div>
 	);
 };
 
-ReactDOM.createRoot(document.getElementById('root')).render(<PotenzLearningApp />);
+ReactDOM.createRoot(document.getElementById('root')).render(<PotenzEinfachApp />);
 </script>
 </body>
 </html>
